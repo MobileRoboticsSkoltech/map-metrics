@@ -2,7 +2,7 @@
 
 
 import copy
-from open3d import o3d
+import open3d as o3d
 
 
 def aggregate_map(pcs, Ts):
