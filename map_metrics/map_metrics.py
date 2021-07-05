@@ -2,6 +2,7 @@
 
 
 import copy
+import numpy as np
 import open3d as o3d
 
 
@@ -32,5 +33,26 @@ def mme(pcs, Ts):
             det = np.linalg.det(2 * np.pi * np.e * cov)
             if det > 0:
                 metric.append(0.5 * np.log(det))
+
+    return 0 if len(metric) == 0 else np.mean(metric)
+
+
+def mpv(pcs, Ts):
+    MIN_KNN = 5
+    KNN_RAD=1
+
+    pc_map = aggregate_map(pcs, Ts)
+
+    map_tree = o3d.geometry.KDTreeFlann(pc_map)
+    points = np.asarray(pc_map.points)
+
+    metric = []
+    for i in range(points.shape[0]):
+        point = points[i]
+        [k, idx, _] = map_tree.search_radius_vector_3d(point, KNN_RAD)
+        if len(idx) > MIN_KNN:
+            cov = np.cov(points[idx].T)
+            eigenvalues = np.linalg.eig(cov)[0]
+            metric.append(min(eigenvalues))
 
     return 0 if len(metric) == 0 else np.mean(metric)
