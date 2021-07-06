@@ -3,13 +3,16 @@
 
 import copy
 import math
+import networkx as nx
 import numpy as np
 import open3d as o3d
+from sklearn.cluster import AgglomerativeClustering
 
 
 def aggregate_map(pcs, Ts):
     assert len(pcs) == len(Ts), 'Number of point clouds does not match number of poses'
 
+    Ts = [T @ np.linalg.inv(Ts[0]) for T in Ts]
     pc_map = o3d.geometry.PointCloud()
     for i, pc in enumerate(pcs):
         pc_map += copy.deepcopy(pc).transform(Ts[i])
@@ -60,11 +63,19 @@ def mpv(pcs, Ts):
 
 
 def extract_orthogonal_subsets(pc, eps=1e-1, vis=False):
-    
     # Estimate normals if they are not calculated for pc
     if not pc.has_normals():
         pc.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=2, max_nn=30))
+    
+    pc = pc.uniform_down_sample(4)
+    
+    normals, lambdas, new_points = build_normals_and_lambdas(pc)
 
+    cut_pcd = o3d.geometry.PointCloud()
+    cut_pcd.points = o3d.utility.Vector3dVector(new_points)
+    cut_pcd.normals = o3d.utility.Vector3dVector(normals)
+
+    pc = cut_pcd
     # Group normals    
     normals = np.asarray(pc.normals)
     clustering = AgglomerativeClustering(n_clusters=None, linkage="complete", distance_threshold=1e-1
@@ -168,20 +179,47 @@ def build_normals_and_lambdas(pc, knn_rad=1):
 
 
 def orth_mme(pcs, Ts):
+    KNN_RAD = 1
     pc_map = aggregate_map(pcs, Ts)
     map_tree = o3d.geometry.KDTreeFlann(pc_map)
     points = np.asarray(pc_map.points)
 
     pc = pcs[0]
     pc.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30))
-    normals, lambdas, new_points = build_normals_and_lambdas(pc)
-
-    cut_pcd = o3d.geometry.PointCloud()
-    cut_pcd.points = o3d.utility.Vector3dVector(new_points)
-    cut_pcd.normals = o3d.utility.Vector3dVector(normals)
 
     pc_map = aggregate_map(pcs, Ts)
-    orth_subset, orth_normals, cluster_normals = extract_orthogonal_subsets(cut_pcd, eps=10e-2, vis=False)
+    orth_subset, orth_normals, cluster_normals = extract_orthogonal_subsets(pc, eps=1e-1, vis=False)
+
+    orth_axes_stats = []
+    orth_list = orth_subset
+
+    for k, chosen_points in enumerate(orth_list):
+        metric = []
+        plane_error = []
+        for i in range(chosen_points.shape[0]):
+            point = chosen_points[i]
+            [_, idx, _] = map_tree.search_radius_vector_3d(point, KNN_RAD)
+            if len(idx) > 5:
+                metric.append(entropy(points[idx]))
+
+        avg_metric = np.median(metric)
+
+        orth_axes_stats.append(avg_metric)
+
+    return np.sum(orth_axes_stats)
+
+
+def orth_mpv(pcs, Ts):
+    KNN_RAD = 1
+    pc_map = aggregate_map(pcs, Ts)
+    map_tree = o3d.geometry.KDTreeFlann(pc_map)
+    points = np.asarray(pc_map.points)
+
+    pc = pcs[0]
+    pc.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30))
+
+    pc_map = aggregate_map(pcs, Ts)
+    orth_subset, orth_normals, cluster_normals = extract_orthogonal_subsets(pc, eps=1e-1, vis=False)
 
     orth_axes_stats = []
     orth_list = orth_subset
@@ -191,44 +229,9 @@ def orth_mme(pcs, Ts):
         plane_error = []
         for i in range(chosen_points.shape[0]):
             point = chosen_points[i]
-            [_, idx, _] = map_tree.search_radius_vector_3d(point, knn_rad)
+            [_, idx, _] = map_tree.search_radius_vector_3d(point, KNN_RAD)
             if len(idx) > 5:
-                metric.append(mme(points[idx]))
-  
-        avg_metric = np.median(metric)
-
-        orth_axes_stats.append(avg_metric)
-
-    return np.sum(orth_axes_stats)
-
-
-def orth_mpv(pc_map, map_tips, knn_rad=1):
-    pc_map = aggregate_map(pcs, Ts)
-    map_tree = o3d.geometry.KDTreeFlann(pc_map)
-    points = np.asarray(pc_map.points)
-
-    pc = pcs[0]
-    pc.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30))
-    normals, lambdas, new_points = build_normals_and_lambdas(pc)
-
-    cut_pcd = o3d.geometry.PointCloud()
-    cut_pcd.points = o3d.utility.Vector3dVector(new_points)
-    cut_pcd.normals = o3d.utility.Vector3dVector(normals)
-
-    pc_map = aggregate_map(pcs, Ts)
-    orth_subset, orth_normals, cluster_normals = extract_orthogonal_subsets(cut_pcd, eps=10e-2, vis=False)
-
-    orth_axes_stats = []
-    orth_list = orth_subset
-    
-    for k, chosen_points in enumerate(orth_list):
-        metric = []
-        plane_error = []
-        for i in range(chosen_points.shape[0]):
-            point = chosen_points[i]
-            [_, idx, _] = map_tree.search_radius_vector_3d(point, knn_rad)
-            if len(idx) > 5:
-                metric.append(mpv(points[idx]))
+                metric.append(plane_variance(points[idx]))
 
         avg_metric = np.median(metric)
     
@@ -236,12 +239,17 @@ def orth_mpv(pc_map, map_tips, knn_rad=1):
     
     return np.sum(orth_axes_stats)
 
-def mme(points):
-    cov = np.cov(points.T)
-    det = np.linalg.det(2 * np.pi * np.e * cov)
-    return 0.5 * np.log(det) if det > 0 else -math.inf
 
-def mpv(points):
+def plane_variance(points):
     cov = np.cov(points.T)
     eigenvalues = np.linalg.eig(cov)[0]
     return min(eigenvalues)
+
+
+def entropy(points):
+    cov = np.cov(points.T)
+    det = np.linalg.det(2 * np.pi * np.e * cov)
+    if det < 0:
+        raise ValueError('Determinant of points is negative!')
+    else:
+        return 0.5 * np.log(det)
