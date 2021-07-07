@@ -41,7 +41,7 @@ Citation
 
 If you use this toolkit or MOM-metric results, please, cite our work:
 
-.. code-block:: console
+.. code-block::
 
     @misc{kornilova2021benchmark,
         title={Be your own Benchmark: No-Reference Trajectory Metric on Registered Point Clouds}, 

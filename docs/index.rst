@@ -8,7 +8,6 @@ Welcome to Map Metrics's documentation!
    readme
    installation
    usage
-   contributing
    authors
    history
 

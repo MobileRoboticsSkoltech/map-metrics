@@ -13,4 +13,4 @@ To install Map Metrics, run this command in your terminal:
 .. code-block:: console
 
     $ pip install -U pip
-    $ pip install map_metrics
+    $ pip install -U map_metrics
