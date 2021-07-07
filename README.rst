@@ -61,7 +61,8 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
 
-
+Links
+-----
 
 .. [#] Droeschel, David, Jörg Stückler, and Sven Behnke. "Local multi-resolution representation for 6D motion estimation and mapping with a continuously rotating 3D laser scanner." 2014 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2014.
 .. [#] Razlaw, Jan, et al. "Evaluation of registration methods for sparse 3D laser scans." 2015 European Conference on Mobile Robots (ECMR). IEEE, 2015. 
