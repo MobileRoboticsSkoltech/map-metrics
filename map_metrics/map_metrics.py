@@ -178,7 +178,7 @@ def build_normals_and_lambdas(pc, knn_rad=1):
     return np.vstack(normals), lambdas, np.vstack(new_points)
 
 
-def orth_mme(pcs, Ts):
+def orth_mme(pcs, Ts, orth_list=None):
     KNN_RAD = 1
     pc_map = aggregate_map(pcs, Ts)
     map_tree = o3d.geometry.KDTreeFlann(pc_map)
@@ -187,11 +187,12 @@ def orth_mme(pcs, Ts):
     pc = pcs[0]
     pc.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30))
 
+    if orth_list is None:
+        orth_list, _, _ = extract_orthogonal_subsets(pc, eps=1e-1, vis=False)
+
     pc_map = aggregate_map(pcs, Ts)
-    orth_subset, orth_normals, cluster_normals = extract_orthogonal_subsets(pc, eps=1e-1, vis=False)
 
     orth_axes_stats = []
-    orth_list = orth_subset
 
     for k, chosen_points in enumerate(orth_list):
         metric = []
@@ -209,7 +210,7 @@ def orth_mme(pcs, Ts):
     return np.sum(orth_axes_stats)
 
 
-def orth_mpv(pcs, Ts):
+def orth_mpv(pcs, Ts, orth_list=None):
     KNN_RAD = 1
     pc_map = aggregate_map(pcs, Ts)
     map_tree = o3d.geometry.KDTreeFlann(pc_map)
@@ -218,11 +219,11 @@ def orth_mpv(pcs, Ts):
     pc = pcs[0]
     pc.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30))
 
-    pc_map = aggregate_map(pcs, Ts)
-    orth_subset, orth_normals, cluster_normals = extract_orthogonal_subsets(pc, eps=1e-1, vis=False)
+    if orth_list is None:
+        orth_list, _, _ = extract_orthogonal_subsets(pc, eps=1e-1, vis=False)
 
+    pc_map = aggregate_map(pcs, Ts)
     orth_axes_stats = []
-    orth_list = orth_subset
     
     for k, chosen_points in enumerate(orth_list):
         metric = []
