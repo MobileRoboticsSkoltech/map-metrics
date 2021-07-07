@@ -11,6 +11,10 @@ RPE, and their modifications) could not be applied to evaluate trajectory qualit
 camera, LiDAR) are available on the perception system, one can alternatively assess trajectory quality --- estimate 
 the consistency of the map from registered point clouds via the trajectory.
 
+
+Documentation: https://map-metrics.readthedocs.io.
+
+
 .. image:: https://img.shields.io/pypi/v/map_metrics.svg
         :target: https://pypi.python.org/pypi/map_metrics
 
@@ -33,8 +37,6 @@ Our toolkit provides implementation of the next metrics:
 * Mean Map Entropy (MME), Mean Plane Variance(MPV) [#]_ [#]_
 * Mutually Orthogonal Metric (MOM) [#]_ -- has strong correlation with RPE
 
-
-Documentation: https://map-metrics.readthedocs.io.
 
 Citation
 --------
