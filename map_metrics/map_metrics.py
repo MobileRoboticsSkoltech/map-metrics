@@ -62,6 +62,10 @@ def mpv(pcs, Ts):
     return 0 if len(metric) == 0 else np.mean(metric)
 
 
+def mom(pcs, Ts, orth_list=None):
+    return orth_mme(pcs, Ts, orth_list=None)
+
+
 def extract_orthogonal_subsets(pc, eps=1e-1, vis=False):
     # Estimate normals if they are not calculated for pc
     if not pc.has_normals():
