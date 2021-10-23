@@ -5,9 +5,11 @@ project(map-metrics)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# OPTIONS
+# # # # # # OPTIONS # # # # # #
 option(GLIBCXX_USE_CXX11_ABI   "Set -D_GLIBCXX_USE_CXX11_ABI=1"       OFF)
 option(STATIC_WINDOWS_RUNTIME  "Use static (MT/MTd) Windows runtime"  ON )
+# Set this flag ON if you want to build tests
+option(BUILD_TESTS "Build an executable with tests" ON)
 
 # By default select Debug build
 if(NOT CMAKE_BUILD_TYPE)
@@ -25,5 +27,11 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 message(FATAL_ERROR "In-source build detected!")
 endif()
 
+# External dependencies
+add_subdirectory(external)
 # Be your own benchmark library
 add_subdirectory(cpp)
+
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
