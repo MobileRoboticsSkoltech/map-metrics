@@ -1,13 +1,10 @@
 #ifndef MAP_METRICS_METRICS_H
 #define MAP_METRICS_METRICS_H
 
-#include <algorithm>
-#include <numeric>
 #include <vector>
 
 #include "open3d/Open3D.h"
 #include "Eigen/Core"
-#include "Eigen/Eigenvalues"
 
 namespace map_metrics {
     using open3d::geometry::PointCloud;
@@ -26,6 +23,10 @@ namespace map_metrics {
     PointCloud aggregate_map(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
 
     SearchRadiusData search_radius_vector_3d(KDTreeFlann const & tree, Eigen::Vector3d const & query, double radius);
+
+    double mvp(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
+
+    double mme(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
     
 }
 

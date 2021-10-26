@@ -1,5 +1,11 @@
 #include "metrics.h"
 
+#include <algorithm>
+#include <numeric>
+
+#include "Eigen/Core"
+#include "Eigen/Dense"
+
 namespace map_metrics{
 
     Eigen::MatrixX3d cov(Eigen::MatrixX3d const & M){
@@ -49,7 +55,7 @@ namespace map_metrics{
         const int min_knn = 5;
         const double knn_rad = 1.0;
 
-        auto pc_map = aggregate_map(pcs, ts);
+        PointCloud pc_map = aggregate_map(pcs, ts);
 
 
         KDTreeFlann map_tree;
@@ -64,6 +70,30 @@ namespace map_metrics{
                 Eigen::MatrixXd cov_matrix = cov(tmp);
                 auto eigenvalues = cov_matrix.eigenvalues().real();
                 metric.push_back(*std::min_element(eigenvalues.begin(), eigenvalues.end()));
+            }
+        }
+        return (metric.empty() ? 0 : std::reduce(metric.begin(), metric.end()) / static_cast<double>(metric.size()));
+    }
+
+    double mme(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
+        const int min_knn = 5;
+        const double knn_rad = 1.0;
+
+        PointCloud pc_map = aggregate_map(pcs, ts);
+
+        KDTreeFlann map_tree;
+        map_tree.SetGeometry(pc_map);
+        std::vector<Eigen::Vector3d> points = pc_map.points_;
+
+        std::vector<double> metric;
+        for (const auto& point: points){
+            auto tpl = search_radius_vector_3d(map_tree, point, knn_rad);
+            if (tpl.indices.size() > min_knn){
+                Eigen::MatrixXd tmp = points_idx_to_matrix(points, tpl.indices);
+                Eigen::MatrixXd cov_matrix = cov(tmp);
+                double det =  (2. * M_PI * M_E * cov_matrix).determinant();
+                if (det > 0)
+                    metric.push_back(0.5 * std::log(det));
             }
         }
         return (metric.empty() ? 0 : std::reduce(metric.begin(), metric.end()) / static_cast<double>(metric.size()));
