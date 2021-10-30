@@ -51,7 +51,7 @@ namespace map_metrics{
         return SearchRadiusData({k, indices, distance2});
     }
 
-    double mvp(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
+    double mpv(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
         const int min_knn = 5;
         const double knn_rad = 1.0;
 
