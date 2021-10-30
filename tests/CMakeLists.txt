@@ -6,7 +6,7 @@ add_subdirectory(gtest)
 file(GLOB PC_DATA ${CMAKE_SOURCE_DIR}/tests/data)
 file(COPY ${PC_DATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-set(TEST_SOURCES main.cpp mpv.cpp test_utils.h)
+set(TEST_SOURCES main.cpp parse.cpp parse_utils.h)
 
 add_executable(run_tests ${TEST_SOURCES})
 

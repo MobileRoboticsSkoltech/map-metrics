@@ -2,12 +2,13 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <fstream>
 #include <filesystem>
 
 #include "open3d/Open3D.h"
 
-namespace test_utils{
+namespace parse_utils{
     using open3d::geometry::PointCloud;
     using open3d::geometry::KDTreeFlann;
 
@@ -15,6 +16,29 @@ namespace test_utils{
         std::ofstream output(filename);
         for (double const & number: PC)
             output << std::setprecision(17) << number << '\n';
+    }
+
+    std::vector<double> SplitString(std::string const & line, char delim){
+        std::istringstream ss(line);
+        std::string token;
+        std::vector<double> numbers;
+        while(std::getline(ss, token, delim)){
+            numbers.push_back(std::stod(token));
+        }
+
+        return numbers;
+    }
+
+    std::vector<std::vector<double>> ParseTrajectory(std::filesystem::path const & path){
+        std::ifstream data(path);
+        std::vector<std::vector<double>> trajectory;
+        std::string line;
+
+        while(std::getline(data, line)){
+            trajectory.push_back(SplitString(line, ' '));
+        }
+
+        return trajectory;
     }
 
     std::vector<double> ParseCSV(std::filesystem::path const & path){
