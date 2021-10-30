@@ -24,7 +24,7 @@ namespace map_metrics {
 
     SearchRadiusData search_radius_vector_3d(KDTreeFlann const & tree, Eigen::Vector3d const & query, double radius);
 
-    double mvp(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
+    double mpv(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
 
     double mme(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
     
