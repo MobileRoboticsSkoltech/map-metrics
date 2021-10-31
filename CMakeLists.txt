@@ -13,8 +13,8 @@ option(BUILD_TESTS "Build an executable with tests" ON)
 
 # By default select Debug build
 if(NOT CMAKE_BUILD_TYPE)
-    message(STATUS "No CMAKE_BUILD_TYPE specified, default to Release.")
-    set(CMAKE_BUILD_TYPE "Release")
+    message(STATUS "No CMAKE_BUILD_TYPE specified, default to Debug.")
+    set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
 # If Build type is Release, then turn on optimizations

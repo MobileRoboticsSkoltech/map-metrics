@@ -25,9 +25,10 @@ namespace map_metrics{
     PointCloud aggregate_map(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
         assert (pcs.size() == ts.size());
 
-        std::vector<Eigen::Matrix4d> inv_ts(ts.size());
-        for (size_t i = 0; i < ts.size(); ++i)
-            inv_ts[i] = ts[i] * ts[0].inverse();
+        std::vector<Eigen::Matrix4d> inv_ts;
+        for (Eigen::Matrix4d const & mx : ts){
+            inv_ts.emplace_back(mx * ts[0].inverse());
+        }
 
         PointCloud pc_map = PointCloud();
         for (size_t i = 0; i < pcs.size(); ++i){
