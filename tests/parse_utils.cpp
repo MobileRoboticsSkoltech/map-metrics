@@ -68,7 +68,7 @@ namespace parse_utils{
         return PC;
     }
 
-    std::vector<std::vector<double>> GetPointClouds(char const * path){
+    std::vector<std::vector<double>> GetPointClouds(std::filesystem::path const & path){
         std::vector<std::vector<double>> point_clouds;
         std::vector<std::filesystem::path> PC_file_names;
         for (const auto & entry : std::filesystem::directory_iterator(path)){

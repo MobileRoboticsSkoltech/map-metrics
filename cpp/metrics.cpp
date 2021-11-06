@@ -26,14 +26,15 @@ namespace map_metrics{
         assert (pcs.size() == ts.size());
 
         std::vector<Eigen::Matrix4d> inv_ts;
+        Eigen::Matrix4d inv_elem = ts[0].inverse();
         for (Eigen::Matrix4d const & mx : ts){
-            inv_ts.emplace_back(mx * ts[0].inverse());
+            inv_ts.emplace_back(mx * inv_elem);
         }
 
         PointCloud pc_map = PointCloud();
         for (size_t i = 0; i < pcs.size(); ++i){
             PointCloud tmp = pcs[i];
-            pc_map += tmp.Transform(ts[i]);
+            pc_map += tmp.Transform(inv_ts[i]);
         }
 
         return pc_map;
@@ -67,10 +68,10 @@ namespace map_metrics{
         for (const auto& point: points){
             auto tpl = search_radius_vector_3d(map_tree, point, knn_rad);
             if (tpl.indices.size() > min_knn){
-                Eigen::MatrixXd tmp = points_idx_to_matrix(points, tpl.indices);
-                Eigen::MatrixXd cov_matrix = cov(tmp);
-                auto eigenvalues = cov_matrix.eigenvalues().real();
-                metric.push_back(*std::min_element(eigenvalues.begin(), eigenvalues.end()));
+                Eigen::MatrixX3d tmp = points_idx_to_matrix(points, tpl.indices);
+                Eigen::MatrixX3d cov_matrix = cov(tmp);
+                Eigen::VectorXd eigenvalues = cov_matrix.eigenvalues().real();
+                metric.push_back(eigenvalues.minCoeff());
             }
         }
         return (metric.empty() ? 0 : std::reduce(metric.begin(), metric.end()) / static_cast<double>(metric.size()));

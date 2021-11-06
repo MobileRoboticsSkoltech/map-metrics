@@ -23,7 +23,7 @@ namespace parse_utils{
 
     std::vector<double> ParseCSV(std::filesystem::path const & path);
 
-    std::vector<std::vector<double>> GetPointClouds(char const * path);
+    std::vector<std::vector<double>> GetPointClouds(std::filesystem::path const & path);
 }
 
 #endif //MAP_METRICS_PARSE_UTILS_H

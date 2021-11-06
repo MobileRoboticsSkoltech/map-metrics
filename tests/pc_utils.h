@@ -8,8 +8,6 @@
 #include <vector>
 
 #include "Eigen/Core"
-// TODO: Remove this
-#include <iostream>
 
 namespace pc_utils{
 
@@ -18,16 +16,6 @@ namespace pc_utils{
         for (Eigen::Index i = 0; i < 4; ++i)
             eigen_matrix.row(i) = Eigen::Map<Eigen::Vector4d>(vec[i].data(), 4);
         return eigen_matrix;
-    }
-
-    template<typename T>
-    void PrintMatrix(std::vector<T> const & mx){
-        std::cout << "BEGIN PRINT\n";
-        for (auto& line : mx){
-            for (auto& elem : line) std::cout << elem << ' ';
-            std::cout << std::endl;
-        }
-        std::cout << "END PRINT\n";
     }
 
     std::vector<Eigen::Vector3d> VectorToPointCloudPoints(std::vector<double> vec){
