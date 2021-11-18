@@ -1,14 +1,19 @@
+//
+// Created by achains on 18.11.2021.
+//
+
 #ifndef MAP_METRICS_METRICS_H
 #define MAP_METRICS_METRICS_H
 
-#include <vector>
 
-#include "open3d/Open3D.h"
-#include "Eigen/Core"
+#include <iostream>
+#include <cilantro/core/kd_tree.hpp>
+#include <cilantro/utilities/point_cloud.hpp>
 
 namespace map_metrics {
-    using open3d::geometry::PointCloud;
-    using open3d::geometry::KDTreeFlann;
+
+    using PointCloud = cilantro::PointCloud3d;
+    using KDTree = cilantro::KDTree3d<>;
 
     struct SearchRadiusData{
         int k;
@@ -22,12 +27,12 @@ namespace map_metrics {
 
     PointCloud aggregate_map(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
 
-    SearchRadiusData search_radius_vector_3d(KDTreeFlann const & tree, Eigen::Vector3d const & query, double radius);
+    SearchRadiusData search_radius_vector_3d(KDTree const & tree, Eigen::Vector3d const & query, double radius);
 
     double mpv(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
 
     double mme(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
-    
+
 }
 
 #endif //MAP_METRICS_METRICS_H

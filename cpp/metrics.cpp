@@ -1,3 +1,7 @@
+//
+// Created by achains on 18.11.2021.
+//
+
 #include "metrics.h"
 
 #include <algorithm>
@@ -5,6 +9,7 @@
 
 #include "Eigen/Core"
 #include "Eigen/Dense"
+
 
 namespace map_metrics{
 
@@ -34,16 +39,17 @@ namespace map_metrics{
         PointCloud pc_map = PointCloud();
         for (size_t i = 0; i < pcs.size(); ++i){
             PointCloud tmp = pcs[i];
-            pc_map += tmp.Transform(inv_ts[i]);
+            tmp.transform(inv_ts[i]);
         }
 
         return pc_map;
     }
 
     // https://github.com/isl-org/Open3D/blob/master/cpp/pybind/geometry/kdtreeflann.cpp#L176
-    SearchRadiusData search_radius_vector_3d(KDTreeFlann const & tree, Eigen::Vector3d const & query, double radius){
+    SearchRadiusData search_radius_vector_3d(KDTree const & tree, Eigen::Vector3d const & query, double radius){
         std::vector<int> indices;
         std::vector<double> distance2;
+        tree.radiusSearch()
         int k = tree.SearchRadius(query, radius, indices, distance2);
 
         if (k < 0)
@@ -60,9 +66,8 @@ namespace map_metrics{
         PointCloud pc_map = aggregate_map(pcs, ts);
 
 
-        KDTreeFlann map_tree;
-        map_tree.SetGeometry(pc_map);
-        std::vector<Eigen::Vector3d> points = pc_map.points_;
+        KDTree map_tree(pc_map);
+        cilantro::VectorSet3d points = pc_map.points;
 
         std::vector<double> metric;
         for (const auto& point: points){
@@ -85,7 +90,7 @@ namespace map_metrics{
 
         KDTreeFlann map_tree;
         map_tree.SetGeometry(pc_map);
-        std::vector<Eigen::Vector3d> points = pc_map.points_;
+        std::vector<Eigen::Vector3d> points = pc_map.points;
 
         std::vector<double> metric;
         for (const auto& point: points){
