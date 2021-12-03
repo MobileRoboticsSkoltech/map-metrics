@@ -3,6 +3,7 @@
 //
 
 #include <gtest/gtest.h>
+#include <chrono>
 
 #include "pc_utils.h"
 #include "parse_utils.h"
@@ -45,14 +46,30 @@ TEST(BaseMetrics, MPV){
 
     std::vector<cilantro::PointCloud3d> PCs = GetPointClouds("data/kitti_00");
 
-    ASSERT_LE(std::fabs(map_metrics::mpv(PCs, tj_gt) - 0.08949105590777887), 1e8);
+    auto start_time = std::chrono::system_clock::now();
+    double result_mpv = map_metrics::mpv(PCs, tj_gt);
+    auto elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now() - start_time);
+
+    std::cout << "MPV: " << result_mpv << std::endl;
+    std::cout << "Elapsed time (ms): " << elapsed_milliseconds.count() << std::endl;
+
+    ASSERT_LE(std::fabs(result_mpv - 0.08949105590777887), 1e8);
 }
 
-//TEST(BaseMetrics, MME){
-//    std::vector<Eigen::Matrix4d> tj_gt = GetCalibratedTrajectory("data/00.txt");
-//    ASSERT_EQ(tj_gt.size(), 20);
-//
-//    std::vector<open3d::geometry::PointCloud> PCs = GetPointClouds("data/kitti_00");
-//
-//    ASSERT_LE(std::fabs(map_metrics::mme(PCs, tj_gt) - 1.2553150544133582), 1e8);
-//}
+TEST(BaseMetrics, MME){
+    std::vector<Eigen::Matrix4d> tj_gt = GetCalibratedTrajectory("data/00.txt");
+    ASSERT_EQ(tj_gt.size(), 20);
+
+    std::vector<cilantro::PointCloud3d> PCs = GetPointClouds("data/kitti_00");
+
+    auto start_time = std::chrono::system_clock::now();
+    double result_mme = map_metrics::mme(PCs, tj_gt);
+    auto elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now() - start_time);
+
+    std::cout << "MME: " << result_mme << std::endl;
+    std::cout << "Elapsed time (ms): " << elapsed_milliseconds.count() << std::endl;
+
+    ASSERT_LE(std::fabs(result_mme - 1.2553150544133582), 1e8);
+}
