@@ -5,8 +5,6 @@
 #ifndef MAP_METRICS_METRICS_H
 #define MAP_METRICS_METRICS_H
 
-
-#include <iostream>
 #include <cilantro/core/kd_tree.hpp>
 #include <cilantro/utilities/point_cloud.hpp>
 
@@ -15,19 +13,18 @@ namespace map_metrics {
     using PointCloud = cilantro::PointCloud3d;
     using KDTree = cilantro::KDTree3d<>;
 
-    struct SearchRadiusData{
-        int k;
-        std::vector<int> indices;
-        std::vector<double> distance2;
-    };
-
     Eigen::MatrixX3d cov(Eigen::MatrixX3d const & M);
 
-    Eigen::MatrixX3d points_idx_to_matrix(std::vector<Eigen::Vector3d> const & points, std::vector<int> const & idx);
+    // Points are represented like
+    //    x1   ...   xn
+    //  ( y1 ) ... ( yn )
+    //    z1   ...   zn
+    Eigen::MatrixX3d points_idx_to_matrix(cilantro::VectorSet3d const & points, std::vector<unsigned long> const & idx);
 
     PointCloud aggregate_map(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
 
-    SearchRadiusData search_radius_vector_3d(KDTree const & tree, Eigen::Vector3d const & query, double radius);
+    std::vector<unsigned long> get_radius_search_indices(KDTree const & tree,
+                                                       Eigen::Vector3d const & query, double radius);
 
     double mpv(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
 
