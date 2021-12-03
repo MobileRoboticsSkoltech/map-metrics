@@ -9,7 +9,7 @@
 
 #include "Eigen/Core"
 #include "Eigen/Dense"
-
+#include "Eigen/Geometry"
 
 namespace map_metrics{
 
@@ -18,11 +18,11 @@ namespace map_metrics{
         return (centered.adjoint() * centered) / (static_cast<double>(M.rows()) - 1.0);
     }
 
-    Eigen::MatrixX3d points_idx_to_matrix(std::vector<Eigen::Vector3d> const & points, std::vector<int> const & idx){
+    Eigen::MatrixX3d points_idx_to_matrix(cilantro::VectorSet3d const & points, std::vector<unsigned long> const & idx){
         Eigen::MatrixX3d matrix(idx.size(), 3);
         Eigen::Index row_idx = 0;
         for (const auto & i : idx){
-            matrix.row(row_idx++) = points[i];
+            matrix.row(row_idx++) = points.col(static_cast<Eigen::Index>(i));
         }
         return matrix;
     }
@@ -38,25 +38,23 @@ namespace map_metrics{
 
         PointCloud pc_map = PointCloud();
         for (size_t i = 0; i < pcs.size(); ++i){
-            PointCloud tmp = pcs[i];
-            tmp.transform(inv_ts[i]);
+            // TODO: Fix transform
+            Eigen::Transform <double, 3, Eigen::Affine> t(inv_ts[i]);
+            pc_map.points += pcs[i].transformed(t).points;
         }
 
         return pc_map;
     }
 
-    // https://github.com/isl-org/Open3D/blob/master/cpp/pybind/geometry/kdtreeflann.cpp#L176
-    SearchRadiusData search_radius_vector_3d(KDTree const & tree, Eigen::Vector3d const & query, double radius){
-        std::vector<int> indices;
-        std::vector<double> distance2;
-        tree.radiusSearch()
-        int k = tree.SearchRadius(query, radius, indices, distance2);
+    std::vector<unsigned long> get_radius_search_indices(KDTree const & tree,
+                                                       Eigen::Vector3d const & query, double radius){
+        cilantro::NeighborSet<double> nn = tree.radiusSearch(query, radius);
+        std::vector<unsigned long> indices(nn.size());
+        for (size_t i = 0; i < nn.size(); ++i){
+            indices[i] = nn[i].index;
+        }
 
-        if (k < 0)
-            throw std::runtime_error(
-                    "search_radius_vector_3d() error!");
-
-        return SearchRadiusData({k, indices, distance2});
+        return indices;
     }
 
     double mpv(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
@@ -66,14 +64,16 @@ namespace map_metrics{
         PointCloud pc_map = aggregate_map(pcs, ts);
 
 
-        KDTree map_tree(pc_map);
+        KDTree map_tree(pc_map.points);
         cilantro::VectorSet3d points = pc_map.points;
 
+
         std::vector<double> metric;
-        for (const auto& point: points){
-            auto tpl = search_radius_vector_3d(map_tree, point, knn_rad);
-            if (tpl.indices.size() > min_knn){
-                Eigen::MatrixX3d tmp = points_idx_to_matrix(points, tpl.indices);
+        for (Eigen::Index i = 0; i < points.cols(); ++i){
+            std::vector<unsigned long> indices = get_radius_search_indices(map_tree,
+                                                                        points.col(i), knn_rad);
+            if (indices.size() > min_knn){
+                Eigen::MatrixX3d tmp = points_idx_to_matrix(points, indices);
                 Eigen::MatrixX3d cov_matrix = cov(tmp);
                 Eigen::VectorXd eigenvalues = cov_matrix.eigenvalues().real();
                 metric.push_back(eigenvalues.minCoeff());
@@ -82,28 +82,28 @@ namespace map_metrics{
         return (metric.empty() ? 0 : std::reduce(metric.begin(), metric.end()) / static_cast<double>(metric.size()));
     }
 
-    double mme(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
-        const int min_knn = 5;
-        const double knn_rad = 1.0;
-
-        PointCloud pc_map = aggregate_map(pcs, ts);
-
-        KDTreeFlann map_tree;
-        map_tree.SetGeometry(pc_map);
-        std::vector<Eigen::Vector3d> points = pc_map.points;
-
-        std::vector<double> metric;
-        for (const auto& point: points){
-            auto tpl = search_radius_vector_3d(map_tree, point, knn_rad);
-            if (tpl.indices.size() > min_knn){
-                Eigen::MatrixXd tmp = points_idx_to_matrix(points, tpl.indices);
-                Eigen::MatrixXd cov_matrix = cov(tmp);
-                double det =  (2. * M_PI * M_E * cov_matrix).determinant();
-                if (det > 0)
-                    metric.push_back(0.5 * std::log(det));
-            }
-        }
-        return (metric.empty() ? 0 : std::reduce(metric.begin(), metric.end()) / static_cast<double>(metric.size()));
-    }
+//    double mme(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
+//        const int min_knn = 5;
+//        const double knn_rad = 1.0;
+//
+//        PointCloud pc_map = aggregate_map(pcs, ts);
+//
+//        KDTree map_tree(pc_map.points);
+//
+//        cilantro::VectorSet3d points = pc_map.points;
+//
+//        std::vector<double> metric;
+//        for (const auto& point: points){
+//            auto tpl = search_radius_vector_3d(map_tree, point, knn_rad);
+//            if (tpl.indices.size() > min_knn){
+//                Eigen::MatrixXd tmp = points_idx_to_matrix(points, tpl.indices);
+//                Eigen::MatrixXd cov_matrix = cov(tmp);
+//                double det =  (2. * M_PI * M_E * cov_matrix).determinant();
+//                if (det > 0)
+//                    metric.push_back(0.5 * std::log(det));
+//            }
+//        }
+//        return (metric.empty() ? 0 : std::reduce(metric.begin(), metric.end()) / static_cast<double>(metric.size()));
+//    }
 
 }

@@ -7,11 +7,12 @@
 #include <fstream>
 #include <filesystem>
 
-#include "open3d/Open3D.h"
+#include <cilantro/core/kd_tree.hpp>
+#include <cilantro/utilities/point_cloud.hpp>
 
 namespace parse_utils{
-    using open3d::geometry::PointCloud;
-    using open3d::geometry::KDTreeFlann;
+    using PointCloud = cilantro::PointCloud3d;
+    using KDTree = cilantro::KDTree3d<>;
 
     void WritePCToFile(char const * filename, PointCloud const & PC);
 
