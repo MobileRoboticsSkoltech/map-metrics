@@ -15,7 +15,7 @@ target_include_directories(run_tests PUBLIC "${CMAKE_BINARY_DIR}/_deps/googletes
 
 target_link_libraries(run_tests PUBLIC gtest_main)
 target_link_libraries(run_tests PUBLIC map_metrics)
-target_link_libraries(run_tests PUBLIC cilantro)
+# target_link_libraries(run_tests PUBLIC cilantro)
 
 include(GoogleTest)
 gtest_discover_tests(run_tests)
