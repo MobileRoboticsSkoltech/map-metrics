@@ -9,10 +9,6 @@
 
 #include "Eigen/Core"
 #include "Eigen/Dense"
-#include "Eigen/Geometry"
-
-// TODO: REMOVE
-#include <iostream>
 
 namespace map_metrics{
 
@@ -51,7 +47,7 @@ namespace map_metrics{
             }
         }
 
-        return PointCloud(pc_map_points);
+        return PointCloud{pc_map_points};
     }
 
     std::vector<unsigned long> get_radius_search_indices(KDTree const & tree,

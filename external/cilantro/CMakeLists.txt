@@ -12,3 +12,7 @@ if(NOT cilantro_POPULATED)
     set(cilantro_BUILD_EXAMPLES OFF)
     target_include_directories(map_metrics PUBLIC "${CMAKE_BINARY_DIR}/_deps/cilantro-src/include")
 endif()
+
+# TODO: Cilantro root CMakeLists.txt:70 somehow doesn't add config.hpp file, we do it manually
+configure_file("${CMAKE_BINARY_DIR}/_deps/cilantro-src/config.hpp.in"
+        "${CMAKE_BINARY_DIR}/_deps/cilantro-src/include/cilantro/config.hpp")
