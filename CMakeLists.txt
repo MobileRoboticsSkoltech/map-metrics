@@ -33,10 +33,10 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 message(FATAL_ERROR "In-source build detected!")
 endif()
 
-# Be your own benchmark library
-add_subdirectory(cpp)
 # External dependencies
 add_subdirectory(external)
+# Be your own benchmark library
+add_subdirectory(cpp)
 
 if (BUILD_TESTS)
     add_subdirectory(tests)
