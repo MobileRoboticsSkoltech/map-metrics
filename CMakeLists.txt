@@ -10,6 +10,8 @@ option(GLIBCXX_USE_CXX11_ABI   "Set -D_GLIBCXX_USE_CXX11_ABI=1"       OFF)
 option(STATIC_WINDOWS_RUNTIME  "Use static (MT/MTd) Windows runtime"  ON )
 # Set this flag ON if you want to build tests
 option(BUILD_TESTS "Build an executable with tests" ON)
+# Set this flag ON if you want to build Python library interface
+option(BUILD_PYTHON_MODULE "Build the python module" ON)
 
 if (MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
@@ -37,6 +39,10 @@ endif()
 add_subdirectory(external)
 # Be your own benchmark library
 add_subdirectory(cpp)
+
+if (BUILD_PYTHON_MODULE)
+    add_subdirectory(cpp/pybind)
+endif()
 
 if (BUILD_TESTS)
     add_subdirectory(tests)
