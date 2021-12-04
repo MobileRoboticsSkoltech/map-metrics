@@ -13,6 +13,14 @@
 #include "Eigen/Core"
 #include "Eigen/Dense"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+#ifndef M_E
+#define M_E 2.718281828459045235360
+#endif
+
 namespace map_metrics{
 
     Eigen::MatrixX3d cov(Eigen::MatrixX3d const & M){
@@ -90,7 +98,7 @@ namespace map_metrics{
     double mme(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
         const int min_knn = 5;
         const double knn_rad = 1.0;
-
+        cilantro::
         PointCloud pc_map = aggregate_map(pcs, ts);
 
         KDTree map_tree(pc_map.points);
