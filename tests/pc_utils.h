@@ -19,6 +19,7 @@ namespace pc_utils{
         return eigen_matrix;
     }
 
+    // TODO: Check return type, should be VectorSet3d
     std::vector<Eigen::Vector3d> VectorToPointCloudPoints(std::vector<double> vec){
         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> mx(
                 vec.data(), static_cast<Eigen::Index>(vec.size() / 4), 4
