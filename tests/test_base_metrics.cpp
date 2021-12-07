@@ -26,28 +26,27 @@ std::vector<Eigen::Matrix4d> GetCalibratedTrajectory(std::filesystem::path const
     return pc_utils::CalibrateTrajectory(GetCalibrationMatrix(), trajectory);
 }
 
-std::vector<cilantro::PointCloud3d> GetPointClouds(std::filesystem::path const & path){
+std::vector<cilantro::VectorSet3d> GetPointClouds(std::filesystem::path const & path){
     std::vector<std::vector<double>> PCs_vector = parse_utils::GetPointClouds(path);
-    std::vector<cilantro::PointCloud3d> PCs;
+    std::vector<cilantro::VectorSet3d> PCs_points;
 
     for (auto & PC_vector : PCs_vector)
     {
-        auto points = pc_utils::VectorToPointCloudPoints(PC_vector);
-        auto PC = cilantro::PointCloud3d(points);
-        PCs.push_back(PC);
+        cilantro::VectorSet3d points = pc_utils::VectorToPointCloudPoints(PC_vector);
+        PCs_points.push_back(points);
     }
 
-    return PCs;
+    return PCs_points;
 }
 
 TEST(BaseMetrics, MPV){
     std::vector<Eigen::Matrix4d> tj_gt = GetCalibratedTrajectory("data/00.txt");
     ASSERT_EQ(tj_gt.size(), 20);
 
-    std::vector<cilantro::PointCloud3d> PCs = GetPointClouds("data/kitti_00");
+    std::vector<cilantro::VectorSet3d> PCs = GetPointClouds("data/kitti_00");
 
     auto start_time = std::chrono::system_clock::now();
-    double result_mpv = map_metrics::mpv(PCs, tj_gt);
+    double result_mpv = metrics::mpv(PCs, tj_gt);
     auto elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now() - start_time);
 
@@ -61,10 +60,10 @@ TEST(BaseMetrics, MME){
     std::vector<Eigen::Matrix4d> tj_gt = GetCalibratedTrajectory("data/00.txt");
     ASSERT_EQ(tj_gt.size(), 20);
 
-    std::vector<cilantro::PointCloud3d> PCs = GetPointClouds("data/kitti_00");
+    std::vector<cilantro::VectorSet3d> PCs = GetPointClouds("data/kitti_00");
 
     auto start_time = std::chrono::system_clock::now();
-    double result_mme = map_metrics::mme(PCs, tj_gt);
+    double result_mme = metrics::mme(PCs, tj_gt);
     auto elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now() - start_time);
 

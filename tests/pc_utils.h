@@ -6,6 +6,7 @@
 #define MAP_METRICS_PC_UTILS_H
 
 #include <vector>
+#include "cilantro/core/kd_tree.hpp"
 
 #include "Eigen/Core"
 
@@ -19,16 +20,15 @@ namespace pc_utils{
         return eigen_matrix;
     }
 
-    // TODO: Check return type, should be VectorSet3d
-    std::vector<Eigen::Vector3d> VectorToPointCloudPoints(std::vector<double> vec){
+    cilantro::VectorSet3d VectorToPointCloudPoints(std::vector<double> vec){
         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> mx(
                 vec.data(), static_cast<Eigen::Index>(vec.size() / 4), 4
                 );
         Eigen::MatrixX3d mx3d = mx(Eigen::all, Eigen::seq(0, Eigen::last - 1));
 
-        std::vector<Eigen::Vector3d> points(mx3d.rows());
+        cilantro::VectorSet3d points(3, mx3d.rows());
         for (Eigen::Index i = 0; i < mx3d.rows(); ++i)
-            points[i] = mx3d.row(i);
+            points.col(i) = mx3d.row(i);
 
         return points;
     }
