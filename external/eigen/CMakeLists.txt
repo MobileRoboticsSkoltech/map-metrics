@@ -7,5 +7,6 @@ ExternalProject_Add(
         CMAKE_ARGS
         -DEIGEN_BUILD_DOC=OFF
         -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-        -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 )
+
+FetchContent_MakeAvailable(eigen)

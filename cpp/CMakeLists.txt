@@ -2,12 +2,6 @@ set(SOURCES metrics.cpp metrics.h)
 
 add_library(map_metrics SHARED ${SOURCES})
 
-if (MSVC)
-    target_include_directories(map_metrics PUBLIC "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/eigen/eigen/include/eigen3")
-    target_include_directories(map_metrics PUBLIC "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/cilantro/cilantro/include")
-else()
-    target_include_directories(map_metrics PUBLIC "${CMAKE_BINARY_DIR}/external/eigen/eigen/include/eigen3")
-    target_include_directories(map_metrics PUBLIC "${CMAKE_BINARY_DIR}/external/cilantro/cilantro/include")
-endif()
-
+target_include_directories(map_metrics PUBLIC "${CMAKE_BINARY_DIR}/_deps/eigen-src")
+target_include_directories(map_metrics PUBLIC "${CMAKE_BINARY_DIR}/external/cilantro/cilantro/include")
 target_include_directories(map_metrics PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
