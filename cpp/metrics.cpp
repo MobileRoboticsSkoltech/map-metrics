@@ -15,7 +15,7 @@ namespace metrics {
             double knn_radius,
             std::optional<double> (*algorithm)
                     (cilantro::VectorSet3d const &points,
-                     std::vector<unsigned long> const &indices)) {
+                     std::vector<int> const &indices)) {
 
         std::vector<cilantro::PointCloud3d> pcs(pcs_points.size());
         for (size_t i = 0; i < pcs_points.size(); ++i){
@@ -29,7 +29,7 @@ namespace metrics {
 
         std::vector<double> metric;
         for (Eigen::Index i = 0; i < points.cols(); ++i) {
-            std::vector<unsigned long> indices = metrics_utils::get_radius_search_indices(map_tree,
+            std::vector<int> indices = metrics_utils::get_radius_search_indices(map_tree,
                                                                            points.col(i), knn_radius);
             if (indices.size() > min_knn) {
                 std::optional<double> result = algorithm(points, indices);
