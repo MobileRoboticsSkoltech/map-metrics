@@ -7,11 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # # # # # # OPTIONS # # # # # #
 option(GLIBCXX_USE_CXX11_ABI   "Set -D_GLIBCXX_USE_CXX11_ABI=1"       OFF)
-option(STATIC_WINDOWS_RUNTIME  "Use static (MT/MTd) Windows runtime"  ON )
+# option(STATIC_WINDOWS_RUNTIME  "Use static (MT/MTd) Windows runtime"  ON )
+
 # Set this flag ON if you want to build tests
 option(BUILD_TESTS "Build an executable with tests" ON)
 
-if (MSVC)
+if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     set(BUILD_SHARED_LIBS TRUE)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
