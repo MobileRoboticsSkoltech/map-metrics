@@ -75,7 +75,7 @@ namespace metrics_utils{
 
     namespace metrics_algorithm{
         std::optional<double> compute_eigenvalues(cilantro::VectorSet3d const & points,
-                                   std::vector<ulong> const & indices){
+                                   std::vector<unsigned long> const & indices){
             Eigen::MatrixX3d tmp = points_idx_to_matrix(points, indices);
             Eigen::MatrixX3d cov_matrix = cov(tmp);
             Eigen::VectorXd eigenvalues = cov_matrix.eigenvalues().real();
@@ -83,7 +83,7 @@ namespace metrics_utils{
         }
 
         std::optional<double> compute_entropy(cilantro::VectorSet3d const & points,
-                                              std::vector<ulong> const & indices){
+                                              std::vector<unsigned long> const & indices){
             Eigen::MatrixXd tmp = points_idx_to_matrix(points, indices);
             Eigen::MatrixXd cov_matrix = cov(tmp);
             double det =  (2. * M_PI * M_E * cov_matrix).determinant();

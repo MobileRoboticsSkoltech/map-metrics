@@ -19,7 +19,7 @@ namespace metrics{
             double knn_radius = 1.0,
             std::optional<double> (*algorithm)
             (cilantro::VectorSet3d const & points,
-             std::vector<ulong> const & indices) = metrics_utils::metrics_algorithm::compute_eigenvalues
+             std::vector<unsigned long> const & indices) = metrics_utils::metrics_algorithm::compute_eigenvalues
             );
 
     // MPV. Mean Plane Variance

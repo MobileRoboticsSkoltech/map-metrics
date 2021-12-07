@@ -28,10 +28,10 @@ namespace metrics_utils {
 
     namespace metrics_algorithm{
         std::optional<double> compute_eigenvalues(cilantro::VectorSet3d const & points,
-                                                  std::vector<ulong> const & indices);
+                                                  std::vector<unsigned long> const & indices);
 
         std::optional<double> compute_entropy(cilantro::VectorSet3d const & points,
-                                              std::vector<ulong> const & indices);
+                                              std::vector<unsigned long> const & indices);
     } // namespace metrics_algorithm
 } // namespace metrics_utils
 

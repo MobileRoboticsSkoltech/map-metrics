@@ -13,7 +13,7 @@ namespace metrics {
             double knn_radius,
             std::optional<double> (*algorithm)
                     (cilantro::VectorSet3d const &points,
-                     std::vector<ulong> const &indices)) {
+                     std::vector<unsigned long> const &indices)) {
 
         std::vector<cilantro::PointCloud3d> pcs(pcs_points.size());
         for (size_t i = 0; i < pcs_points.size(); ++i){
