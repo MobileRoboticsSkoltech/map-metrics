@@ -8,6 +8,8 @@
 #include <cilantro/core/kd_tree.hpp>
 #include <cilantro/utilities/point_cloud.hpp>
 
+#include <optional>
+
 namespace metrics_utils {
 
     using PointCloud = cilantro::PointCloud3d;

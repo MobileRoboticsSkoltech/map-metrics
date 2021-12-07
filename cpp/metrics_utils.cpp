@@ -4,12 +4,8 @@
 
 #include "metrics_utils.h"
 
-#define _USE_MATH_DEFINES
-#include <cmath>
-#include <optional>
-
 #include <algorithm>
-#include <numeric>
+#include <cmath>
 
 #include "Eigen/Core"
 #include "Eigen/Dense"
