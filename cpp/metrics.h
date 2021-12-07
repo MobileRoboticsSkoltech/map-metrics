@@ -1,35 +1,34 @@
 //
-// Created by achains on 18.11.2021.
+// Created by achains on 07.12.2021.
 //
 
 #ifndef MAP_METRICS_METRICS_H
 #define MAP_METRICS_METRICS_H
 
-#include <cilantro/core/kd_tree.hpp>
-#include <cilantro/utilities/point_cloud.hpp>
+#include "metrics_utils.h"
 
-namespace map_metrics {
+namespace metrics{
 
-    using PointCloud = cilantro::PointCloud3d;
-    using KDTree = cilantro::KDTree3d<>;
+    // Available Base metrics are:
+    // MPV -- Mean Plane Variance
+    // MME -- Mean Map Entropy
+    double compute_base_metric(
+            std::vector<cilantro::VectorSet3d> const & pcs_points,
+            std::vector<Eigen::Matrix4d> const & ts,
+            int min_knn = 5,
+            double knn_radius = 1.0,
+            std::optional<double> (*algorithm)
+            (cilantro::VectorSet3d const & points,
+             std::vector<ulong> const & indices) = metrics_utils::metrics_algorithm::compute_eigenvalues
+            );
 
-    Eigen::MatrixX3d cov(Eigen::MatrixX3d const & M);
+    // MPV. Mean Plane Variance
+    double mpv(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
+               int min_knn = 5, double knn_rad = 1.0);
 
-    // Points are represented like
-    //    x1   ...   xn
-    //  ( y1 ) ... ( yn )
-    //    z1   ...   zn
-    Eigen::MatrixX3d points_idx_to_matrix(cilantro::VectorSet3d const & points, std::vector<unsigned long> const & idx);
-
-    PointCloud aggregate_map(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
-
-    std::vector<unsigned long> get_radius_search_indices(KDTree const & tree,
-                                                       Eigen::Vector3d const & query, double radius);
-
-    double mpv(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
-
-    double mme(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
-
-}
+    // MME. Mean Map Entropy
+    double mme(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
+               int min_knn = 5, double knn_rad = 1.0);
+} // namespace metrics
 
 #endif //MAP_METRICS_METRICS_H
