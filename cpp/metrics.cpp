@@ -5,6 +5,8 @@
 #include "metrics_utils.h"
 #include "metrics.h"
 
+#include <numeric>
+
 namespace metrics {
     double compute_base_metric(
             std::vector<cilantro::VectorSet3d> const &pcs_points,
