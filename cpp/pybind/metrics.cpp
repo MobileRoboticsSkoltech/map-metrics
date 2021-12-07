@@ -18,8 +18,8 @@ PYBIND11_MODULE(map_metrics_py, m){
     m.doc() = "Baseline of MPV and MME metrics";
     m.def("mpv", py::overload_cast<
           const std::vector<cilantro::VectorSet3d> &,
-          const std::vector<Eigen::Matrix4d> &, int, double>(&metrics::mpv));
+          const std::vector<Eigen::Matrix4d> &, int, double>(&metrics::GetMPV));
     m.def("mme", py::overload_cast<
           const std::vector<cilantro::VectorSet3d> &,
-          const std::vector<Eigen::Matrix4d> &, int, double>(&metrics::mme));
+          const std::vector<Eigen::Matrix4d> &, int, double>(&metrics::GetMME));
 }

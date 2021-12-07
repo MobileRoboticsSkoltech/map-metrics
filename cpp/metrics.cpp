@@ -8,7 +8,7 @@
 #include <numeric>
 
 namespace metrics {
-    double compute_base_metric(
+    double ComputeBaseMetrics(
             std::vector<cilantro::VectorSet3d> const &pcs_points,
             std::vector<Eigen::Matrix4d> const &ts,
             int min_knn,
@@ -22,14 +22,14 @@ namespace metrics {
             pcs[i] = cilantro::PointCloud3d(pcs_points[i]);
         }
 
-        metrics_utils::PointCloud pc_map = metrics_utils::aggregate_map(pcs, ts);
+        metrics_utils::PointCloud pc_map = metrics_utils::AggregateMap(pcs, ts);
 
         metrics_utils::KDTree map_tree(pc_map.points);
         cilantro::VectorSet3d points = pc_map.points;
 
         std::vector<double> metric;
         for (Eigen::Index i = 0; i < points.cols(); ++i) {
-            std::vector<int> indices = metrics_utils::get_radius_search_indices(map_tree,
+            std::vector<int> indices = metrics_utils::GetRadiusSearchIndices(map_tree,
                                                                            points.col(i), knn_radius);
             if (indices.size() > min_knn) {
                 std::optional<double> result = algorithm(points, indices);
@@ -42,15 +42,15 @@ namespace metrics {
         std::reduce(metric.begin(), metric.end()) / static_cast<double>(metric.size()));
     }
 
-    double mpv(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
+    double GetMPV(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
                int min_knn, double knn_rad){
-        return compute_base_metric(pcs_points, ts, min_knn, knn_rad,
-                                   &metrics_utils::metrics_algorithm::compute_eigenvalues);
+        return ComputeBaseMetrics(pcs_points, ts, min_knn, knn_rad,
+                                   &metrics_utils::metrics_algorithm::ComputeEigenvalues);
     }
 
-    double mme(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
+    double GetMME(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
                int min_knn, double knn_rad){
-        return compute_base_metric(pcs_points, ts, min_knn, knn_rad,
-                                   &metrics_utils::metrics_algorithm::compute_entropy);
+        return ComputeBaseMetrics(pcs_points, ts, min_knn, knn_rad,
+                                   &metrics_utils::metrics_algorithm::ComputeEntropy);
     }
 } // namespace metrics

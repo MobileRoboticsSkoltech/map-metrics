@@ -20,12 +20,12 @@
 
 namespace metrics_utils{
 
-    Eigen::MatrixX3d cov(Eigen::MatrixX3d const & M){
+    Eigen::MatrixX3d FindCov(Eigen::MatrixX3d const & M){
         Eigen::MatrixX3d centered = M.rowwise() - M.colwise().mean();
         return (centered.adjoint() * centered) / (static_cast<double>(M.rows()) - 1.0);
     }
 
-    Eigen::MatrixX3d points_idx_to_matrix(cilantro::VectorSet3d const & points, std::vector<int> const & idx){
+    Eigen::MatrixX3d TransformPointIdxToMatrix(cilantro::VectorSet3d const & points, std::vector<int> const & idx){
         Eigen::MatrixX3d matrix(idx.size(), 3);
         Eigen::Index row_idx = 0;
         for (const auto & i : idx){
@@ -34,7 +34,7 @@ namespace metrics_utils{
         return matrix;
     }
 
-    PointCloud aggregate_map(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
+    PointCloud AggregateMap(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
         assert (pcs.size() == ts.size());
 
         std::vector<Eigen::Matrix4d> inv_ts;
@@ -58,7 +58,7 @@ namespace metrics_utils{
         return PointCloud{pc_map_points};
     }
 
-    std::vector<int> get_radius_search_indices(KDTree const & tree,
+    std::vector<int> GetRadiusSearchIndices(KDTree const & tree,
                                                        Eigen::Vector3d const & query, double radius){
         cilantro::NeighborSet<double> nn = tree.radiusSearch(query, radius);
         std::vector<int> indices(nn.size());
@@ -70,18 +70,18 @@ namespace metrics_utils{
     }
 
     namespace metrics_algorithm{
-        std::optional<double> compute_eigenvalues(cilantro::VectorSet3d const & points,
+        std::optional<double> ComputeEigenvalues(cilantro::VectorSet3d const & points,
                                    std::vector<int> const & indices){
-            Eigen::MatrixX3d tmp = points_idx_to_matrix(points, indices);
-            Eigen::MatrixX3d cov_matrix = cov(tmp);
+            Eigen::MatrixX3d tmp = TransformPointIdxToMatrix(points, indices);
+            Eigen::MatrixX3d cov_matrix = FindCov(tmp);
             Eigen::VectorXd eigenvalues = cov_matrix.eigenvalues().real();
             return eigenvalues.minCoeff();
         }
 
-        std::optional<double> compute_entropy(cilantro::VectorSet3d const & points,
+        std::optional<double> ComputeEntropy(cilantro::VectorSet3d const & points,
                                               std::vector<int> const & indices){
-            Eigen::MatrixXd tmp = points_idx_to_matrix(points, indices);
-            Eigen::MatrixXd cov_matrix = cov(tmp);
+            Eigen::MatrixXd tmp = TransformPointIdxToMatrix(points, indices);
+            Eigen::MatrixXd cov_matrix = FindCov(tmp);
             double det =  (2. * M_PI * M_E * cov_matrix).determinant();
             if (det > 0)
                 return 0.5 * std::log(det);

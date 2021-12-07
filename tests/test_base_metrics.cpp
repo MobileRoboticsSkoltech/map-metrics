@@ -46,7 +46,7 @@ TEST(BaseMetrics, MPV){
     std::vector<cilantro::VectorSet3d> PCs = GetPointClouds("data/kitti_00");
 
     auto start_time = std::chrono::system_clock::now();
-    double result_mpv = metrics::mpv(PCs, tj_gt);
+    double result_mpv = metrics::GetMPV(PCs, tj_gt);
     auto elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now() - start_time);
 
@@ -63,7 +63,7 @@ TEST(BaseMetrics, MME){
     std::vector<cilantro::VectorSet3d> PCs = GetPointClouds("data/kitti_00");
 
     auto start_time = std::chrono::system_clock::now();
-    double result_mme = metrics::mme(PCs, tj_gt);
+    double result_mme = metrics::GetMME(PCs, tj_gt);
     auto elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now() - start_time);
 

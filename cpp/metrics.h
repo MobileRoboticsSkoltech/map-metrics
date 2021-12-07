@@ -12,22 +12,22 @@ namespace metrics{
     // Available Base metrics are:
     // MPV -- Mean Plane Variance
     // MME -- Mean Map Entropy
-    double compute_base_metric(
+    double ComputeBaseMetrics(
             std::vector<cilantro::VectorSet3d> const & pcs_points,
             std::vector<Eigen::Matrix4d> const & ts,
             int min_knn = 5,
             double knn_radius = 1.0,
             std::optional<double> (*algorithm)
             (cilantro::VectorSet3d const & points,
-             std::vector<int> const & indices) = metrics_utils::metrics_algorithm::compute_eigenvalues
+             std::vector<int> const & indices) = metrics_utils::metrics_algorithm::ComputeEigenvalues
             );
 
     // MPV. Mean Plane Variance
-    double mpv(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
+    double GetMPV(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
                int min_knn = 5, double knn_rad = 1.0);
 
     // MME. Mean Map Entropy
-    double mme(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
+    double GetMME(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
                int min_knn = 5, double knn_rad = 1.0);
 } // namespace metrics
 
