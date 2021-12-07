@@ -40,10 +40,6 @@ add_subdirectory(external)
 add_subdirectory(cpp)
 
 if (BUILD_PYTHON_MODULE)
-    add_subdirectory(cpp/pybind)
-endif()
-
-if (BUILD_PYTHON_MODULE)
     add_subdirectory(external/pybind11)
     add_subdirectory(cpp/pybind)
 endif()
