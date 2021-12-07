@@ -37,7 +37,7 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config Release
 
-      # Run tests executable
+      # Run C++ tests executable
       - name: Run tests
-        working-directory: ${{github.workspace}}/build/tests
+        working-directory: ${{github.workspace}}/build/cpp/tests
         run: ctest -C ${{env.BUILD_TYPE}}
