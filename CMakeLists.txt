@@ -18,10 +18,10 @@ if (WIN32)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 endif()
 
-# By default select Debug build
+# By default select Release build
 if(NOT CMAKE_BUILD_TYPE)
-    message(STATUS "No CMAKE_BUILD_TYPE specified, default to Debug.")
-    set(CMAKE_BUILD_TYPE "Debug")
+    message(STATUS "No CMAKE_BUILD_TYPE specified, default to Release.")
+    set(CMAKE_BUILD_TYPE "Release")
 endif()
 
 # If Build type is Release, then turn on optimizations
