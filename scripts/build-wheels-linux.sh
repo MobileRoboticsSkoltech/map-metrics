@@ -39,9 +39,6 @@ echo "Running $NUMPROC parallel jobs"
 
 LATEST=""
 
-sudo apt-get update
-sudo apt-get install -y --no-install-recommends build-essential g++
-
 for PYBIN in /opt/python/cp3*/bin/python
 do
     LATEST=${PYBIN}
