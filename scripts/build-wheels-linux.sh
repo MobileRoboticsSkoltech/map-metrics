@@ -39,6 +39,9 @@ echo "Running $NUMPROC parallel jobs"
 
 LATEST=""
 
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends build-essential g++
+
 for PYBIN in /opt/python/cp3*/bin/python
 do
     LATEST=${PYBIN}
@@ -48,7 +51,6 @@ do
              -DCMAKE_INSTALL_RPATH='$ORIGIN' \
              -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$PWD/../bin \
              -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$PWD/../map_metrics \
-             -DCMAKE_CXX_FLAGS=-std=c++17 \
     && cmake --build .
 done
 
