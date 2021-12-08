@@ -48,6 +48,7 @@ do
              -DCMAKE_INSTALL_RPATH='$ORIGIN' \
              -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$PWD/../bin \
              -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$PWD/../map_metrics \
+             -DCMAKE_CXX_FLAGS=-std=c++17
     && cmake --build . -j $(nproc)
 done
 
