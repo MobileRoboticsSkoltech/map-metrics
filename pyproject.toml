@@ -13,33 +13,13 @@
 #  limitations under the License.
 #
 #
-#  setup.cfg
+#  pyproject.toml
 #
 #  Created on: Oct 31, 2020
 #       Author: Lyubov Miloserdova
 #               miloslubov@gmail.com
 #
 
-[metadata]
-name = mrob
-home-page = https://github.com/MobileRoboticsSkoltech/map-metrics
-maintainer = Anastasiia Kornilova
-maintainer_email = anastasiia.kornilova@skoltech.ru
-long-description = file: README.md
-long_description_content_type = text/markdown
-license = Apache-2.0
-license_files = LICENSE
-
-[options]
-zip_safe = false
-include_package_data = true
-python_requires = >= 3.6
-packages = find:
-
-[options.package_data]
-* =
-    *.so
-    *.dylib
-
-[sdist]
-formats = zip, gztar
+[build-system]
+requires = ["setuptools >= 40.8.0", "wheel", "setuptools-git-versioning >= 1.2.10"]
+build-backend = "setuptools.build_meta"
