@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # # # # # # OPTIONS # # # # # #
 option(GLIBCXX_USE_CXX11_ABI   "Set -D_GLIBCXX_USE_CXX11_ABI=1"       OFF)
 # Set this flag ON if you want to build tests
-option(BUILD_TESTS "Build an executable with tests" ON)
+option(BUILD_TESTS "Build an executable with tests" OFF)
 # Set this flag ON if you want to build Python library interface
 option(BUILD_PYTHON_MODULE "Build the python module" ON)
 
