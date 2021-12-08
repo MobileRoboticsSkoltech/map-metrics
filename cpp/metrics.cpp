@@ -39,7 +39,7 @@ namespace metrics {
         }
 
         return (metric.empty() ? 0 :
-        std::reduce(metric.begin(), metric.end(), 0.0) / static_cast<double>(metric.size()));
+        std::accumulate(metric.begin(), metric.end(), 0.0) / static_cast<double>(metric.size()));
     }
 
     double GetMPV(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
