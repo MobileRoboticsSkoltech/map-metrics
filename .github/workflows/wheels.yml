@@ -51,7 +51,9 @@ jobs:
           env pybin=$(LANG=C ls -d1r /opt/python/cp3*/bin | head -n 1) bash -c '$pybin/python -m pip install cmake && mkdir -p /usr/local/bin && ln -svf $pybin/cmake /usr/local/bin/cmake'
           cmake --version
       - name: Build Python wheel
-        run: scripts/build-wheels-linux.sh
+        run: | 
+          chmod -R +x scripts/* \
+          && scripts/build-wheels-linux.sh
 
       - uses: actions/upload-artifact@v1
         with:
