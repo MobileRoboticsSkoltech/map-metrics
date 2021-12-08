@@ -1,6 +1,6 @@
-# # # # # # # #
+# # # # # # # # #
 # Source: https://github.com/miloserdova-l/mrob/blob/feature/windows-wheel/.github/workflows/wheels.yml
-# # # # # # # #
+# # # # # # # # #
 name: Build wheels
 
 on: [push, pull_request, workflow_dispatch]
