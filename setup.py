@@ -26,7 +26,7 @@ import setuptools
 
 try:
     from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
-    import platform, os
+    import platform, os, ctypes
 
     class bdist_wheel(_bdist_wheel):
 
@@ -37,14 +37,6 @@ try:
 
         def get_tag(self):
             python, abi, plat = _bdist_wheel.get_tag(self)
-            if platform.system() == "Darwin":
-                python, abi = 'py3', 'none'
-                name = plat[:plat.find("_")]
-                for i in range(3):
-                    plat = plat[plat.find("_") + 1:]   # skip name and version of OS
-                arch = plat
-                version = os.getenv('MACOSX_DEPLOYMENT_TARGET').replace('.', '_')
-                plat = name + "_" + version + "_" + arch
             return python, abi, plat
 
 except ImportError:
