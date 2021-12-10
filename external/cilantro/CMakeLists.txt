@@ -7,4 +7,5 @@ ExternalProject_Add(
     CMAKE_ARGS
         -DBUILD_EXAMPLES=OFF
         -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+        -DBUILD_SHARED_LIBS=OFF
 )
