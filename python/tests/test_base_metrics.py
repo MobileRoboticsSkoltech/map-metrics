@@ -51,6 +51,8 @@ def pointclouds(pcs_folder):
         points = np.fromfile(os.path.join(pcs_folder, pc_name), dtype=np.float32).reshape(-1, 4)[:, :3].T
         pcs.append(points)
 
+    return pcs
+
 
 def test_mpv(trajectories, pointclouds):
     result = map_metrics.mpv(trajectories, pointclouds, 5, 1.0)
