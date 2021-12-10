@@ -26,7 +26,7 @@ try:
     for module in dir(map_metrics):
         n = len(module) - 1
         if not (module[:2] == '__' and module[n:n-2:-1] == '__') and module.count('.') == 0:
-            globals()[module] = getattr(mrob, module)
+            globals()[module] = getattr(map_metrics, module)
 
     del mrob
 except ImportError:
