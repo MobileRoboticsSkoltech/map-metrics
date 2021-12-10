@@ -55,10 +55,10 @@ def pointclouds(pcs_folder):
 
 
 def test_mpv(trajectories, pointclouds):
-    result = map_metrics.mpv(trajectories, pointclouds, 5, 1.0)
+    result = map_metrics.mpv(pointclouds, trajectories, 5, 1.0)
     assert abs(result - 0.08949105590777887) < 1e8
 
 
 def test_mme(trajectories, pointclouds):
-    result = map_metrics.mme(trajectories, pointclouds, 5, 1.0)
+    result = map_metrics.mme(pointclouds, trajectories, 5, 1.0)
     assert abs(result - 1.2553150544133582) < 1e8
