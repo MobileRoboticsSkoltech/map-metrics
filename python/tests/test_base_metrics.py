@@ -19,12 +19,12 @@ def t_calib():
 
 @pytest.fixture
 def gt_traj_file():
-    return Path('data/00.txt')
+    return Path('python/tests/data/00.txt')
 
 
 @pytest.fixture
 def pcs_folder():
-    return Path('data/kitti_00/')
+    return Path('python/tests/data/kitti_00/')
 
 
 @pytest.fixture
