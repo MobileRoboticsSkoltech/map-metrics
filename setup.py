@@ -23,27 +23,27 @@
 
 import setuptools
 
-
-try:
-    from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
-    import platform, os, ctypes
-
-    class bdist_wheel(_bdist_wheel):
-
-        def finalize_options(self):
-            _bdist_wheel.finalize_options(self)
-            if platform.system() == "Darwin":
-                self.root_is_pure = False
-
-        def get_tag(self):
-            python, abi, plat = _bdist_wheel.get_tag(self)
-            return python, abi, plat
-
-except ImportError:
-    bdist_wheel = None
+from setuptools.dist import Distribution
+from setuptools import setup, find_packages, Extension
 
 
-setuptools.setup(
-    version_config=True,
-    cmdclass={'bdist_wheel': bdist_wheel}
+def wheel_name(**kwargs):
+    # create a fake distribution from arguments
+    dist = Distribution(attrs=kwargs)
+    # finalize bdist_wheel command
+    bdist_wheel_cmd = dist.get_command_obj('bdist_wheel')
+    bdist_wheel_cmd.ensure_finalized()
+    # assemble wheel file name
+    distname = bdist_wheel_cmd.wheel_dist_name
+    tag = '-'.join(bdist_wheel_cmd.get_tag())
+    return f'{distname}-{tag}.whl'
+
+
+setup_kwargs = dict(
+    name='map_metrics',
+    version='1.2.3',
+    packages=find_packages(),
 )
+file = wheel_name(**setup_kwargs)
+
+setup(**setup_kwargs)
