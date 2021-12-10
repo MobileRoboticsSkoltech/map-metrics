@@ -28,7 +28,7 @@ try:
         if not (module[:2] == '__' and module[n:n-2:-1] == '__') and module.count('.') == 0:
             globals()[module] = getattr(map_metrics, module)
 
-    del mrob
+    del map_metrics
 except ImportError:
     import platform
 
