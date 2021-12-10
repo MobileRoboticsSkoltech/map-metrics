@@ -41,7 +41,7 @@ def wheel_name(**kwargs):
 
 setup_kwargs = dict(
     name='map_metrics',
-    version='1.2.3',
+    version='0.0.3',
     packages=find_packages(),
 )
 file = wheel_name(**setup_kwargs)
