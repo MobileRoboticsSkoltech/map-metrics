@@ -53,7 +53,7 @@ def wheel_name(**kwargs):
     bdist_wheel_cmd.ensure_finalized()
     # assemble wheel file name
     distname = bdist_wheel_cmd.wheel_dist_name
-    tag = transform_tag(*bdist_wheel_cmd.get_tag())
+    tag = '-'.join(transform_tag(*bdist_wheel_cmd.get_tag()))
     return f'{distname}-{tag}.whl'
 
 

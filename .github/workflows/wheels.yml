@@ -29,6 +29,7 @@ jobs:
            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$PWD/bin \
            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$PWD/lib \
            -DCMAKE_BUILD_TYPE=RELEASE \
+           -DCMAKE_CXX_FLAGS="-std=c++17"
           && cmake --build build -j $(nproc)
 
   build_wheel_linux:
@@ -75,7 +76,9 @@ jobs:
         run: git fetch --prune --unshallow --recurse-submodules=no
 
       - name: Install packages
-        run: brew install coreutils
+        run: | 
+          brew install coreutils \
+          && brew install gcc
 
       - name: Build wheel
         run: ./scripts/build-wheels-macOS.sh
