@@ -22,9 +22,27 @@
 
 
 import setuptools
+import platform, os, ctypes
 
 from setuptools.dist import Distribution
 from setuptools import setup, find_packages, Extension
+
+
+def transform_tag(python, abi, plat):
+    if platform.system() == "Darwin":
+        python, abi = 'py3', 'none'
+        name = plat[:plat.find("_")]
+        for i in range(3):
+            plat = plat[plat.find("_") + 1:]   # skip name and version of OS
+        arch = plat
+        version = os.getenv('MACOSX_DEPLOYMENT_TARGET').replace('.', '_')
+        plat = name + "_" + version + "_" + arch
+    elif platform.system() == "Windows":
+        if ctypes.sizeof(ctypes.c_voidp) * 8 > 32:
+            plat = "win_" + platform.machine().lower()
+        else:
+            plat = "win32"
+    return python, abi, plat
 
 
 def wheel_name(**kwargs):
@@ -35,7 +53,7 @@ def wheel_name(**kwargs):
     bdist_wheel_cmd.ensure_finalized()
     # assemble wheel file name
     distname = bdist_wheel_cmd.wheel_dist_name
-    tag = '-'.join(bdist_wheel_cmd.get_tag())
+    tag = transform_tag(*bdist_wheel_cmd.get_tag())
     return f'{distname}-{tag}.whl'
 
 
