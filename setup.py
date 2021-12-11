@@ -51,6 +51,8 @@ def wheel_name(**kwargs):
     # finalize bdist_wheel command
     bdist_wheel_cmd = dist.get_command_obj('bdist_wheel')
     bdist_wheel_cmd.ensure_finalized()
+    if platform.system() == "Darwin":
+        bdist_wheel_cmd.root_is_pure = False
     # assemble wheel file name
     distname = bdist_wheel_cmd.wheel_dist_name
     tag = '-'.join(transform_tag(*bdist_wheel_cmd.get_tag()))
