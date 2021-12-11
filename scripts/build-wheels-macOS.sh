@@ -41,6 +41,7 @@ do
              -DCMAKE_INSTALL_RPATH="@loader_path" \
              -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$PWD/../bin \
              -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$PWD/../map_metrics \
+             -DCMAKE_CXX_FLAGS="-std=c++1z" \
     && cmake --build . -j $NUMPROC
 done
 
