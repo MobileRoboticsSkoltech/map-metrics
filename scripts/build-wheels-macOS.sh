@@ -46,6 +46,6 @@ do
 done
 
 cd ../
-python3 -m pip install --user -q build
+python3 -m pip install --user -q build auditwheel
 python3 -m build --wheel --outdir dist/ .
-
+auditwheel repair ./dist/*.whl
