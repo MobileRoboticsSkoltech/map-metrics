@@ -28,41 +28,43 @@ from setuptools.dist import Distribution
 from setuptools import setup, find_packages, Extension
 
 
-def transform_tag(python, abi, plat):
-    if platform.system() == "Darwin":
-        python, abi = 'py3', 'none'
-        name = plat[:plat.find("_")]
-        for i in range(3):
-            plat = plat[plat.find("_") + 1:]   # skip name and version of OS
-        arch = plat
-        version = os.getenv('MACOSX_DEPLOYMENT_TARGET').replace('.', '_')
-        plat = name + "_" + version + "_" + arch
-    elif platform.system() == "Windows":
-        if ctypes.sizeof(ctypes.c_voidp) * 8 > 32:
-            plat = "win_" + platform.machine().lower()
-        else:
-            plat = "win32"
-    return python, abi, plat
+try:
+    from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
+    import platform, os, ctypes
 
+    class bdist_wheel(_bdist_wheel):
 
-def wheel_name(**kwargs):
-    # create a fake distribution from arguments
-    dist = Distribution(attrs=kwargs)
-    # finalize bdist_wheel command
-    bdist_wheel_cmd = dist.get_command_obj('bdist_wheel')
-    bdist_wheel_cmd.ensure_finalized()
-    if platform.system() == "Darwin":
-        bdist_wheel_cmd.root_is_pure = False
-    # assemble wheel file name
-    distname = bdist_wheel_cmd.wheel_dist_name
-    tag = '-'.join(transform_tag(*bdist_wheel_cmd.get_tag()))
-    return f'{distname}-{tag}.whl'
+        def finalize_options(self):
+            _bdist_wheel.finalize_options(self)
+            if platform.system() == "Darwin":
+                self.root_is_pure = False
+
+        def get_tag(self):
+            python, abi, plat = _bdist_wheel.get_tag(self)
+            if platform.system() == "Darwin":
+                python, abi = 'py3', 'none'
+                name = plat[:plat.find("_")]
+                for i in range(3):
+                    plat = plat[plat.find("_") + 1:]   # skip name and version of OS
+                arch = plat
+                version = os.getenv('MACOSX_DEPLOYMENT_TARGET').replace('.', '_')
+                plat = name + "_" + version + "_" + arch
+            elif platform.system() == "Windows":
+                if ctypes.sizeof(ctypes.c_voidp) * 8 > 32:
+                    plat = "win_" + platform.machine().lower()
+                else:
+                    plat = "win32"
+            return python, abi, plat
+
+except ImportError:
+    bdist_wheel = None
 
 
 setup_kwargs = dict(
     name='map_metrics',
     version='0.0.3',
     packages=find_packages(),
+    cmdclass={'bdist_wheel': bdist_wheel}
 )
 file = wheel_name(**setup_kwargs)
 
