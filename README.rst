@@ -35,7 +35,7 @@ Features
 Our toolkit provides implementation of the next metrics:
 
 * Mean Map Entropy (MME), Mean Plane Variance(MPV) [#]_ [#]_
-* Mutually Orthogonal Metric (MOM) [#]_ -- has strong correlation with RPE
+* Mutually Orthogonal Metric (MOM) [#]_ -- has strong correlation with RPE **(IN PROGRESS, SEE PREVIOUS VERSIONS)**
 
 
 Citation
