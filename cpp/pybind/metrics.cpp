@@ -14,7 +14,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(map_metrics_cpp, m){
+PYBIND11_MODULE(map_metrics, m){
     m.doc() = "Baseline of MPV and MME metrics";
     m.def("mpv", py::overload_cast<
           const std::vector<cilantro::VectorSet3d> &,

@@ -10,4 +10,4 @@ Development Lead
 Contributors
 ------------
 
-None yet. Why not be the first?
+* Arthur Saliou a.k.a. "achains" <arthur.salio@gmail.com>

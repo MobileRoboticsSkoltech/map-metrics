@@ -14,7 +14,7 @@ add_executable(run_tests ${TEST_SOURCES})
 target_include_directories(run_tests PUBLIC "${CMAKE_BINARY_DIR}/_deps/googletest-src/googletest/include")
 
 target_link_libraries(run_tests PUBLIC gtest_main)
-target_link_libraries(run_tests PUBLIC map_metrics)
+target_link_libraries(run_tests PUBLIC map_metrics_cpp)
 
 include(GoogleTest)
 gtest_discover_tests(run_tests)
