@@ -66,6 +66,5 @@ setup_kwargs = dict(
     packages=find_packages(),
     cmdclass={'bdist_wheel': bdist_wheel}
 )
-file = wheel_name(**setup_kwargs)
 
 setup(**setup_kwargs)
