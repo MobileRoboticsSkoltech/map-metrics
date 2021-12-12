@@ -86,53 +86,53 @@ jobs:
         with:
           path: ./dist
 
-#  build_wheel_windows:
-#    name: Build wheel on ${{ matrix.os }} ${{ matrix.arch }}
-#    needs: build
-#    runs-on: ${{ matrix.os }}
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        os: [ windows-2019 ]
-#        arch: [ x64, x86 ]
-#    steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          submodules: recursive
-#      - name: Git fetch
-#        run: git fetch --prune --unshallow --recurse-submodules=no
-#
-#      - name: Setup Python 3.6
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: 3.6
-#          architecture: ${{ matrix.arch }}
-#      - name: Setup Python 3.7
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: 3.7
-#          architecture: ${{ matrix.arch }}
-#      - name: Setup Python 3.8
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: 3.8
-#          architecture: ${{ matrix.arch }}
-#      - name: Setup Python 3.9
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: 3.9
-#          architecture: ${{ matrix.arch }}
-#      - name: Setup Python 3.10
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: '3.10'
-#          architecture: ${{ matrix.arch }}
-#
-#      - name: Build wheel
-#        run: .\scripts\build-wheels-windows.cmd ${{ matrix.arch }}
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          path: .\dist
+  build_wheel_windows:
+    name: Build wheel on ${{ matrix.os }} ${{ matrix.arch }}
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-2019 ]
+        arch: [ x64, x86 ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Git fetch
+        run: git fetch --prune --unshallow --recurse-submodules=no
+
+      - name: Setup Python 3.6
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+          architecture: ${{ matrix.arch }}
+      - name: Setup Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+          architecture: ${{ matrix.arch }}
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+          architecture: ${{ matrix.arch }}
+      - name: Setup Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+          architecture: ${{ matrix.arch }}
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+          architecture: ${{ matrix.arch }}
+
+      - name: Build wheel
+        run: .\scripts\build-wheels-windows.cmd ${{ matrix.arch }}
+      - uses: actions/upload-artifact@v2
+        with:
+          path: .\dist
 
   test_wheel_linux:
     name: Test Python ${{ matrix.python }} wheel on Linux
@@ -187,62 +187,62 @@ jobs:
       - name: "Python unit tests"
         run: |
           python -m pytest python
-#  test_wheel_windows64:
-#    name: Test Python ${{ matrix.python }} wheel on Windows 64bit
-#    runs-on: windows-latest
-#    needs: build_wheel_windows
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        python: ['3.6', '3.7', '3.8', '3.9', '3.10']
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#
-#      - name: Setup Python ${{ matrix.python }}
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: ${{ matrix.python }}
-#
-#      - name: Download artifacts
-#        uses: actions/download-artifact@v2
-#
-#      - name: Install map_metrics & numpy
-#        run: |
-#          python -m pip install .\artifact\$(dir artifact -Name | findstr map_metrics-.*-win_amd64.whl) numpy pytest
-#      - name: "Python unit tests"
-#        run: |
-#          python -m pytest python
-#  test_wheel_windows32:
-#    name: Test Python ${{ matrix.python }} wheel on Windows 32bit
-#    runs-on: windows-latest
-#    needs: build_wheel_windows
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        python: ['3.6', '3.7', '3.8', '3.9', '3.10']
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#
-#      - name: Setup Python ${{ matrix.python }}
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: ${{ matrix.python }}
-#          architecture: x86
-#
-#      - name: Download artifacts
-#        uses: actions/download-artifact@v2
-#
-#      - name: Install map_metrics & numpy
-#        run: |
-#          python -m pip install .\artifact\$(dir artifact -Name | findstr map_metrics-.*-win32.whl) numpy
-#      - name: "Python unit tests"
-#        run: |
-#          $files = Get-ChildItem -Path python_examples -Include *.py
-#          foreach ($f in $files){
-#            python $f.FullName || EXIT /B !ERRORLEVEL!
-#          }
+  test_wheel_windows64:
+    name: Test Python ${{ matrix.python }} wheel on Windows 64bit
+    runs-on: windows-latest
+    needs: build_wheel_windows
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.6', '3.7', '3.8', '3.9', '3.10']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python ${{ matrix.python }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Install map_metrics & numpy
+        run: |
+          python -m pip install .\artifact\$(dir artifact -Name | findstr map_metrics-.*-win_amd64.whl) numpy pytest
+      - name: "Python unit tests"
+        run: |
+          python -m pytest python
+  test_wheel_windows32:
+    name: Test Python ${{ matrix.python }} wheel on Windows 32bit
+    runs-on: windows-latest
+    needs: build_wheel_windows
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.6', '3.7', '3.8', '3.9', '3.10']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python ${{ matrix.python }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+          architecture: x86
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Install map_metrics & numpy
+        run: |
+          python -m pip install .\artifact\$(dir artifact -Name | findstr map_metrics-.*-win32.whl) numpy
+      - name: "Python unit tests"
+        run: |
+          $files = Get-ChildItem -Path python_examples -Include *.py
+          foreach ($f in $files){
+            python $f.FullName || EXIT /B !ERRORLEVEL!
+          }
 
 #  publish_pypi:
 #    name: Publish wheels to PyPI
