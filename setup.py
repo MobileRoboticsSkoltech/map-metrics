@@ -15,9 +15,9 @@
 #
 #  setup.py
 #
-#  Created on: Jan 22, 2020
-#       Author: Lyubov Miloserdova
-#               miloslubov@gmail.com
+#  Created on: Dec 10, 2021
+#       Author: Arthur Saliou a.k.a. achains
+#               arthur.salio@gmail.com
 #
 
 
@@ -62,7 +62,7 @@ except ImportError:
 
 setup_kwargs = dict(
     name='map_metrics',
-    version='0.0.4',
+    version='0.0.2-alpha',
     packages=find_packages(),
     cmdclass={'bdist_wheel': bdist_wheel}
 )
