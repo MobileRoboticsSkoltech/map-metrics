@@ -5,11 +5,11 @@ import open3d as o3d
 from typing import Optional
 
 
-__all__ = ['aggregate_map', 'mme', 'mpv', 'mom']
+__all__ = ["aggregate_map", "mme", "mpv", "mom"]
 
 
 def aggregate_map(pcs, ts):
-    assert len(pcs) == len(ts), 'Number of point clouds does not match number of poses'
+    assert len(pcs) == len(ts), "Number of point clouds does not match number of poses"
 
     ts = [np.linalg.inv(ts[0]) @ T for T in ts]
     pc_map = o3d.geometry.PointCloud()
@@ -48,7 +48,7 @@ def _mean_map_metric(pcs, ts, min_knn=5, knn_rad=1, alg=_plane_variance) -> floa
             if metric_value is not None:
                 metric.append(metric_value)
 
-    return 0. if len(metric) == 0 else np.mean(metric)
+    return 0.0 if len(metric) == 0 else np.mean(metric)
 
 
 def _orth_mpv(pcs, ts, min_knn=5, knn_rad=1, orth_list=None):
@@ -58,7 +58,9 @@ def _orth_mpv(pcs, ts, min_knn=5, knn_rad=1, orth_list=None):
 
     pc = pcs[0]
     # TODO: radius=1.5, max_nn=30. Hardcode?
-    pc.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30))
+    pc.estimate_normals(
+        search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30)
+    )
 
     if orth_list is None:
         orth_list, _, _ = extract_orthogonal_subsets(pc, eps=1e-1, vis=False)
