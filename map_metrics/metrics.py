@@ -3,6 +3,7 @@ import numpy as np
 import open3d as o3d
 
 from typing import Optional
+from utils.orthogonal import extract_orthogonal_subsets
 
 
 __all__ = ["aggregate_map", "mme", "mpv", "mom"]
@@ -57,7 +58,7 @@ def _orth_mpv(pcs, ts, min_knn=5, knn_rad=1, orth_list=None):
     points = np.asarray(pc_map.points)
 
     pc = pcs[0]
-    # TODO: radius=1.5, max_nn=30. Hardcode?
+    # TODO: radius, max_nn -- from config
     pc.estimate_normals(
         search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30)
     )
@@ -81,10 +82,12 @@ def _orth_mpv(pcs, ts, min_knn=5, knn_rad=1, orth_list=None):
     return np.sum(orth_axes_stats)
 
 
+# TODO: min_knn, knn_rad <- config
 def mme(pcs, ts, min_knn=5, knn_rad=1) -> float:
     return _mean_map_metric(pcs, ts, min_knn, knn_rad, alg=_entropy)
 
 
+# TODO: min_knn, knn_rad <- config
 def mpv(pcs, ts, min_knn=5, knn_rad=1) -> float:
     return _mean_map_metric(pcs, ts, min_knn, knn_rad, alg=_plane_variance)
 
