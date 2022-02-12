@@ -11,7 +11,9 @@ from config import BaseConfig, LidarConfig
 __all__ = ["aggregate_map", "mme", "mpv", "mom"]
 
 
-def aggregate_map(pcs: List[o3d.geometry.PointCloud], ts: List[NDArray[(4, 4), np.float64]]) -> o3d.geometry.PointCloud:
+def aggregate_map(
+    pcs: List[o3d.geometry.PointCloud], ts: List[NDArray[(4, 4), np.float64]]
+) -> o3d.geometry.PointCloud:
     """
     Build a map from point clouds with their poses
 
@@ -135,7 +137,9 @@ def mme(pcs, ts, config: Type[BaseConfig] = LidarConfig) -> float:
 
 
 def mpv(pcs, ts, config: Type[BaseConfig] = LidarConfig) -> float:
-    return _mean_map_metric(pcs, ts, config.MIN_KNN, config.KNN_RAD, alg=_plane_variance)
+    return _mean_map_metric(
+        pcs, ts, config.MIN_KNN, config.KNN_RAD, alg=_plane_variance
+    )
 
 
 def mom(pcs, ts, orth_list=None, config: Type[BaseConfig] = LidarConfig):

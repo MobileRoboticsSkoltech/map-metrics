@@ -1,7 +1,7 @@
 antlr4-python3-runtime==4.7.2
 black
 networkx==2.5.1
-numpy==1.19.5
 nptyping==1.4.4
+numpy==1.19.5
 open3d==0.14.1
 scikit-learn==0.24.2

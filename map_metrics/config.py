@@ -1,13 +1,14 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
 
-__all__ = ['BaseConfig', 'DepthConfig', 'LidarConfig', 'CustomConfig']
+__all__ = ["BaseConfig", "DepthConfig", "LidarConfig", "CustomConfig"]
 
 
 class BaseConfig(ABC):
     """
     Base Config Class
     """
+
     KNN_RAD = None
     MIN_KNN = None
 
@@ -16,6 +17,7 @@ class DepthConfig(BaseConfig):
     """
     Config recommended for data obtained from Depth Camera
     """
+
     KNN_RAD = 0.2
     MIN_KNN = 5
 
@@ -24,6 +26,7 @@ class LidarConfig(BaseConfig):
     """
     Config recommended for data obtained from LiDAR
     """
+
     KNN_RAD = 1
     MIN_KNN = 5
 
@@ -40,6 +43,7 @@ class CustomConfig(BaseConfig):
     MIN_KNN: int, default=5
         Minimum number of a point neighbors
     """
-    def __init__(self,  knn_rad=1.0, min_knn=5):
+
+    def __init__(self, knn_rad=1.0, min_knn=5):
         self.KNN_RAD = knn_rad
         self.MIN_KNN = min_knn
