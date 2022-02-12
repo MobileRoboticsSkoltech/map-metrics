@@ -2,15 +2,38 @@ import copy
 import numpy as np
 import open3d as o3d
 
-from typing import Optional
-from utils.orthogonal import extract_orthogonal_subsets
+from typing import Optional, Type, Any, List
+from nptyping import NDArray
 
+from utils.orthogonal import extract_orthogonal_subsets
+from config import BaseConfig, LidarConfig
 
 __all__ = ["aggregate_map", "mme", "mpv", "mom"]
 
 
-def aggregate_map(pcs, ts):
-    assert len(pcs) == len(ts), "Number of point clouds does not match number of poses"
+def aggregate_map(pcs: List[o3d.geometry.PointCloud], ts: List[NDArray[(4, 4), np.float64]]) -> o3d.geometry.PointCloud:
+    """
+    Build a map from point clouds with their poses
+
+    Parameters
+    ----------
+    pcs: List[o3d.geometry.PointCloud]
+        Point Clouds obtained from sensors
+    ts: List[NDArray[(4, 4), np.float64]]
+        Transformation matrices list (i.e., Point Cloud poses)
+
+    Returns
+    -------
+    pc_map: o3d.geometry.PointCloud
+        Map aggregated from point clouds
+
+    Raises
+    ------
+    ValueError
+        If number of point clouds does not match number of poses
+    """
+    if len(pcs) != len(ts):
+        raise ValueError("Number of point clouds does not match number of poses")
 
     ts = [np.linalg.inv(ts[0]) @ T for T in ts]
     pc_map = o3d.geometry.PointCloud()
@@ -20,13 +43,39 @@ def aggregate_map(pcs, ts):
     return pc_map
 
 
-def _plane_variance(points) -> float:
+def _plane_variance(points: NDArray[(Any, 3), np.float64]) -> float:
+    """
+    Compute plane variance of given points
+
+    Parameters
+    ----------
+    points: NDArray[(Any, 3), np.float64]
+        Point Cloud points
+
+    Returns
+    -------
+    plane_variance: float
+        Points plane variance
+    """
     cov = np.cov(points.T)
     eigenvalues = np.linalg.eig(cov)[0]
     return min(eigenvalues)
 
 
-def _entropy(points) -> Optional[float]:
+def _entropy(points: NDArray[(Any, 3), np.float64]) -> Optional[float]:
+    """
+    Compute entropy of given points
+
+    Parameters
+    ----------
+    points: NDArray[(Any, 3), np.float64]
+        Point Cloud points
+
+    Returns
+    -------
+    entropy: Optional[float]
+        Points entropy
+    """
     cov = np.cov(points.T)
     det = np.linalg.det(2 * np.pi * np.e * cov)
     if det > 0:
@@ -58,7 +107,6 @@ def _orth_mpv(pcs, ts, min_knn=5, knn_rad=1, orth_list=None):
     points = np.asarray(pc_map.points)
 
     pc = pcs[0]
-    # TODO: radius, max_nn -- from config
     pc.estimate_normals(
         search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30)
     )
@@ -82,15 +130,13 @@ def _orth_mpv(pcs, ts, min_knn=5, knn_rad=1, orth_list=None):
     return np.sum(orth_axes_stats)
 
 
-# TODO: min_knn, knn_rad <- config
-def mme(pcs, ts, min_knn=5, knn_rad=1) -> float:
-    return _mean_map_metric(pcs, ts, min_knn, knn_rad, alg=_entropy)
+def mme(pcs, ts, config: Type[BaseConfig] = LidarConfig) -> float:
+    return _mean_map_metric(pcs, ts, config.MIN_KNN, config.KNN_RAD, alg=_entropy)
 
 
-# TODO: min_knn, knn_rad <- config
-def mpv(pcs, ts, min_knn=5, knn_rad=1) -> float:
-    return _mean_map_metric(pcs, ts, min_knn, knn_rad, alg=_plane_variance)
+def mpv(pcs, ts, config: Type[BaseConfig] = LidarConfig) -> float:
+    return _mean_map_metric(pcs, ts, config.MIN_KNN, config.KNN_RAD, alg=_plane_variance)
 
 
-def mom(pcs, ts, orth_list=None):
-    return _orth_mpv(pcs, ts, orth_list=orth_list)
+def mom(pcs, ts, orth_list=None, config: Type[BaseConfig] = LidarConfig):
+    return _orth_mpv(pcs, ts, config.MIN_KNN, config.KNN_RAD, orth_list=orth_list)
