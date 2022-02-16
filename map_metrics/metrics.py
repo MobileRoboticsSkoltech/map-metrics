@@ -2,7 +2,7 @@ import copy
 import numpy as np
 import open3d as o3d
 
-from typing import Optional, Type, Any, List
+from typing import Optional, Type, Any, List, Callable
 from nptyping import NDArray
 
 from map_metrics.utils.orthogonal import extract_orthogonal_subsets
@@ -86,7 +86,30 @@ def _entropy(points: NDArray[(Any, 3), np.float64]) -> Optional[float]:
     return None
 
 
-def _mean_map_metric(pcs, ts, config: Type[BaseConfig] = LidarConfig, alg=_plane_variance) -> float:
+def _mean_map_metric(
+    pcs: List[o3d.geometry.PointCloud],
+    ts: List[NDArray[(4, 4), np.float64]],
+    config: Type[BaseConfig] = LidarConfig,
+    alg: Callable = _plane_variance,
+) -> float:
+    """
+    No-reference metric algorithms helper
+
+    Parameters
+    ----------
+    pcs: List[o3d.geometry.PointCloud]
+        Point Clouds obtained from sensors
+    ts: List[NDArray[(4, 4), np.float64]]
+        Transformation matrices list (i.e., Point Cloud poses)
+    config: BaseConfig
+        Scene hyperparameters
+    alg: Callable
+        Metric algorithm basis (e.g., plane variance, entropy)
+    Returns
+    -------
+    mean: float
+        Mean of given metric algorithm values
+    """
     pc_map = aggregate_map(pcs, ts)
 
     map_tree = o3d.geometry.KDTreeFlann(pc_map)
@@ -103,14 +126,39 @@ def _mean_map_metric(pcs, ts, config: Type[BaseConfig] = LidarConfig, alg=_plane
     return 0.0 if len(metric) == 0 else np.mean(metric)
 
 
-def _orth_mpv(pcs, ts, config: Type[BaseConfig] = LidarConfig, orth_list=None):
+def _orth_mpv(
+    pcs: List[o3d.geometry.PointCloud],
+    ts: List[NDArray[(4, 4), np.float64]],
+    config: Type[BaseConfig] = LidarConfig,
+    orth_list: List[o3d.geometry.PointCloud] = None,
+):
+    """
+
+    Parameters
+    ----------
+    pcs: List[o3d.geometry.PointCloud]
+        Point Clouds obtained from sensors
+    ts: List[NDArray[(4, 4), np.float64]]
+        Transformation matrices list (i.e., Point Cloud poses)
+    config: BaseConfig
+        Scene hyperparameters
+    orth_list: List[o3d.geometry.PointCloud], default=None
+        List of orthogonal planes of the map
+
+    Returns
+    -------
+    val: float
+        The value of MPV computed on orthogonal planes of the map
+    """
     pc_map = aggregate_map(pcs, ts)
     map_tree = o3d.geometry.KDTreeFlann(pc_map)
     points = np.asarray(pc_map.points)
 
     pc = pcs[0]
     pc.estimate_normals(
-        search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=config.KNN_RAD, max_nn=config.MAX_NN)
+        search_param=o3d.geometry.KDTreeSearchParamHybrid(
+            radius=config.KNN_RAD, max_nn=config.MAX_NN
+        )
     )
 
     if orth_list is None:
@@ -132,15 +180,82 @@ def _orth_mpv(pcs, ts, config: Type[BaseConfig] = LidarConfig, orth_list=None):
     return np.sum(orth_axes_stats)
 
 
-def mme(pcs, ts, config: Type[BaseConfig] = LidarConfig) -> float:
+def mme(
+    pcs: List[o3d.geometry.PointCloud],
+    ts: List[NDArray[(4, 4), np.float64]],
+    config: Type[BaseConfig] = LidarConfig,
+) -> float:
+    """
+    Mean Map Entropy
+    A no-reference metric algorithm based on entropy
+
+    Parameters
+    ----------
+    pcs: List[o3d.geometry.PointCloud]
+        Point Clouds obtained from sensors
+    ts: List[NDArray[(4, 4), np.float64]]
+        Transformation matrices list (i.e., Point Cloud poses)
+    config: BaseConfig
+        Scene hyperparameters
+
+    Returns
+    -------
+    mean: float
+        Mean of given metric algorithm values
+    """
     return _mean_map_metric(pcs, ts, config, alg=_entropy)
 
 
-def mpv(pcs, ts, config: Type[BaseConfig] = LidarConfig) -> float:
-    return _mean_map_metric(
-        pcs, ts, config, alg=_plane_variance
-    )
+def mpv(
+    pcs: List[o3d.geometry.PointCloud],
+    ts: List[NDArray[(4, 4), np.float64]],
+    config: Type[BaseConfig] = LidarConfig,
+) -> float:
+    """
+    Mean Plane Variance
+    A no-reference metric algorithm based on plane variance
+
+    Parameters
+    ----------
+    pcs: List[o3d.geometry.PointCloud]
+        Point Clouds obtained from sensors
+    ts: List[NDArray[(4, 4), np.float64]]
+        Transformation matrices list (i.e., Point Cloud poses)
+    config: BaseConfig
+        Scene hyperparameters
+
+    Returns
+    -------
+    mean: float
+        Mean of given metric algorithm values
+    """
+    return _mean_map_metric(pcs, ts, config, alg=_plane_variance)
 
 
-def mom(pcs, ts, orth_list=None, config: Type[BaseConfig] = LidarConfig):
+def mom(
+    pcs: List[o3d.geometry.PointCloud],
+    ts: List[NDArray[(4, 4), np.float64]],
+    orth_list: List[o3d.geometry.PointCloud] = None,
+    config: Type[BaseConfig] = LidarConfig,
+):
+    """
+    Mutually Orthogonal Metric
+    A no-reference metric algorithm based on MPV on orthogonal planes subset
+
+    Parameters
+    ----------
+    pcs: List[o3d.geometry.PointCloud]
+        Point Clouds obtained from sensors
+    ts: List[NDArray[(4, 4), np.float64]]
+        Transformation matrices list (i.e., Point Cloud poses)
+    orth_list: List[o3d.geometry.PointCloud], default=None
+        List of orthogonal planes of the map
+    config: BaseConfig
+        Scene hyperparameters
+
+    Returns
+    -------
+    mean: float
+        Mean of given metric algorithm values
+    """
     return _orth_mpv(pcs, ts, config, orth_list=orth_list)

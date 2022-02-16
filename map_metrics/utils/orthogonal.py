@@ -37,7 +37,9 @@ def _build_normals_and_lambdas(pc, knn_rad):
 def _estimate_normals(pc, knn_rad, max_nn):
     if not pc.has_normals():
         pc.estimate_normals(
-            search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=knn_rad, max_nn=max_nn)
+            search_param=o3d.geometry.KDTreeSearchParamHybrid(
+                radius=knn_rad, max_nn=max_nn
+            )
         )
 
     normals, lambdas, new_points = _build_normals_and_lambdas(pc, knn_rad)
@@ -109,7 +111,9 @@ def extract_orthogonal_subsets(pc, config: Type[BaseConfig] = LidarConfig, eps=1
     ).fit(normals)
     labels = clustering.labels_
 
-    cluster_means, cluster_means_ind = _filter_clusters(clustering, normals, min_clust_size=config.MIN_CLUST_SIZE)
+    cluster_means, cluster_means_ind = _filter_clusters(
+        clustering, normals, min_clust_size=config.MIN_CLUST_SIZE
+    )
 
     max_clique = _find_max_clique(labels, cluster_means, cluster_means_ind, eps=eps)
 
