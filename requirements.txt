@@ -5,3 +5,4 @@ nptyping==1.4.4
 numpy==1.19.5
 open3d==0.14.1
 scikit-learn==0.24.2
+pytest==6.2.5
