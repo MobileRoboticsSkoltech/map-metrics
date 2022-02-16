@@ -3,9 +3,7 @@ import networkx as nx
 import open3d as o3d
 
 from typing import Type
-# TODO: Fix relative import
-from ..config import BaseConfig, LidarConfig
-
+from map_metrics.config import BaseConfig, LidarConfig
 from sklearn.cluster import AgglomerativeClustering
 
 

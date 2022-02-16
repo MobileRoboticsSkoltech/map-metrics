@@ -5,8 +5,8 @@ import open3d as o3d
 from typing import Optional, Type, Any, List
 from nptyping import NDArray
 
-from utils.orthogonal import extract_orthogonal_subsets
-from config import BaseConfig, LidarConfig
+from map_metrics.utils.orthogonal import extract_orthogonal_subsets
+from map_metrics.config import BaseConfig, LidarConfig
 
 __all__ = ["aggregate_map", "mme", "mpv", "mom"]
 
