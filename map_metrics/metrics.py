@@ -86,7 +86,7 @@ def _entropy(points: NDArray[(Any, 3), np.float64]) -> Optional[float]:
     return None
 
 
-def _mean_map_metric(pcs, ts, min_knn=5, knn_rad=1, alg=_plane_variance) -> float:
+def _mean_map_metric(pcs, ts, config: Type[BaseConfig] = LidarConfig, alg=_plane_variance) -> float:
     pc_map = aggregate_map(pcs, ts)
 
     map_tree = o3d.geometry.KDTreeFlann(pc_map)
@@ -94,8 +94,8 @@ def _mean_map_metric(pcs, ts, min_knn=5, knn_rad=1, alg=_plane_variance) -> floa
     metric = []
     for i in range(points.shape[0]):
         point = points[i]
-        _, idx, _ = map_tree.search_radius_vector_3d(point, knn_rad)
-        if len(idx) > min_knn:
+        _, idx, _ = map_tree.search_radius_vector_3d(point, config.KNN_RAD)
+        if len(idx) > config.MIN_KNN:
             metric_value = alg(points[idx])
             if metric_value is not None:
                 metric.append(metric_value)
@@ -103,18 +103,18 @@ def _mean_map_metric(pcs, ts, min_knn=5, knn_rad=1, alg=_plane_variance) -> floa
     return 0.0 if len(metric) == 0 else np.mean(metric)
 
 
-def _orth_mpv(pcs, ts, min_knn=5, knn_rad=1, orth_list=None):
+def _orth_mpv(pcs, ts, config: Type[BaseConfig] = LidarConfig, orth_list=None):
     pc_map = aggregate_map(pcs, ts)
     map_tree = o3d.geometry.KDTreeFlann(pc_map)
     points = np.asarray(pc_map.points)
 
     pc = pcs[0]
     pc.estimate_normals(
-        search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=1.5, max_nn=30)
+        search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=config.KNN_RAD, max_nn=config.MAX_NN)
     )
 
     if orth_list is None:
-        orth_list, _, _ = extract_orthogonal_subsets(pc, eps=1e-1, vis=False)
+        orth_list, _, _ = extract_orthogonal_subsets(pc, config=config, eps=1e-1)
 
     orth_axes_stats = []
 
@@ -122,8 +122,8 @@ def _orth_mpv(pcs, ts, min_knn=5, knn_rad=1, orth_list=None):
         metric = []
         for i in range(chosen_points.shape[0]):
             point = chosen_points[i]
-            [_, idx, _] = map_tree.search_radius_vector_3d(point, knn_rad)
-            if len(idx) > min_knn:
+            [_, idx, _] = map_tree.search_radius_vector_3d(point, config.KNN_RAD)
+            if len(idx) > config.MIN_KNN:
                 metric.append(_plane_variance(points[idx]))
 
         avg_metric = np.median(metric)
@@ -133,14 +133,14 @@ def _orth_mpv(pcs, ts, min_knn=5, knn_rad=1, orth_list=None):
 
 
 def mme(pcs, ts, config: Type[BaseConfig] = LidarConfig) -> float:
-    return _mean_map_metric(pcs, ts, config.MIN_KNN, config.KNN_RAD, alg=_entropy)
+    return _mean_map_metric(pcs, ts, config, alg=_entropy)
 
 
 def mpv(pcs, ts, config: Type[BaseConfig] = LidarConfig) -> float:
     return _mean_map_metric(
-        pcs, ts, config.MIN_KNN, config.KNN_RAD, alg=_plane_variance
+        pcs, ts, config, alg=_plane_variance
     )
 
 
 def mom(pcs, ts, orth_list=None, config: Type[BaseConfig] = LidarConfig):
-    return _orth_mpv(pcs, ts, config.MIN_KNN, config.KNN_RAD, orth_list=orth_list)
+    return _orth_mpv(pcs, ts, config, orth_list=orth_list)

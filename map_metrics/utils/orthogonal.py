@@ -2,14 +2,17 @@ import numpy as np
 import networkx as nx
 import open3d as o3d
 
+from typing import Type
+# TODO: Fix relative import
+from ..config import BaseConfig, LidarConfig
+
 from sklearn.cluster import AgglomerativeClustering
 
 
 __all__ = ["extract_orthogonal_subsets"]
 
 
-# TODO: knn_rad <- Config
-def _build_normals_and_lambdas(pc, knn_rad=0.2):
+def _build_normals_and_lambdas(pc, knn_rad):
     pc_tree = o3d.geometry.KDTreeFlann(pc)
     points = np.asarray(pc.points)
     main_normals = np.asarray(pc.normals)
@@ -33,14 +36,13 @@ def _build_normals_and_lambdas(pc, knn_rad=0.2):
     return np.vstack(normals), lambdas, np.vstack(new_points)
 
 
-# TODO: radius, max_nn <- Config
-def _estimate_normals(pc):
+def _estimate_normals(pc, knn_rad, max_nn):
     if not pc.has_normals():
         pc.estimate_normals(
-            search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.2, max_nn=40)
+            search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=knn_rad, max_nn=max_nn)
         )
 
-    normals, lambdas, new_points = _build_normals_and_lambdas(pc)
+    normals, lambdas, new_points = _build_normals_and_lambdas(pc, knn_rad)
 
     cut_pcd = o3d.geometry.PointCloud()
     cut_pcd.points = o3d.utility.Vector3dVector(new_points)
@@ -49,15 +51,11 @@ def _estimate_normals(pc):
     return cut_pcd
 
 
-# TODO: Remove vis
-def _filter_clusters(clustering, normals, min_clust_size=5, vis=None):
-    if vis is None:
-        vis = {}
+def _filter_clusters(clustering, normals, min_clust_size):
     n_clusters = np.unique(clustering.labels_).shape[0]
     labels = clustering.labels_
     huge_clusters = []
     cluster_means, cluster_means_ind = [], []
-    mp = []
 
     for i in range(n_clusters):
         ind = np.where(labels == i)
@@ -65,20 +63,6 @@ def _filter_clusters(clustering, normals, min_clust_size=5, vis=None):
             huge_clusters.append(i)
             cluster_means.append(np.mean(np.vstack(normals)[ind], axis=0))
             cluster_means_ind.append(i)
-
-            if vis:
-                pcd = o3d.geometry.PointCloud()
-                pcd.points = o3d.utility.Vector3dVector(np.vstack(normals)[ind])
-                pcd.paint_uniform_color(
-                    [
-                        0.5 - i / (2 * n_clusters),
-                        0.5 + i / (2 * n_clusters),
-                        0.5 - i / (2 * n_clusters),
-                    ]
-                )
-                mp.append(pcd)
-    if vis.get("Vis_MP"):
-        o3d.visualization.draw_geometries(mp)
 
     # Normalize means of every cluster
     cluster_means = np.vstack(cluster_means)
@@ -117,23 +101,17 @@ def _find_max_clique(labels, cluster_means, cluster_means_ind, eps=1e-1):
     return full_cliques[max_ind]
 
 
-def extract_orthogonal_subsets(pc, eps=1e-1, vis=None):
-    if vis is None:
-        vis = {}
-    cut_pc = _estimate_normals(pc)
-    if vis.get("Vis_Cut_Pc"):
-        o3d.visualization.draw_geometries([cut_pc])
+def extract_orthogonal_subsets(pc, config: Type[BaseConfig] = LidarConfig, eps=1e-1):
+    cut_pc = _estimate_normals(pc, knn_rad=config.KNN_RAD, max_nn=config.MAX_NN)
 
     normals = np.asarray(cut_pc.normals)
-    # if vis.get("Vis_Normals"):
-    #     visualize_normals(normals)
 
     clustering = AgglomerativeClustering(
         n_clusters=None, distance_threshold=1e-1, compute_full_tree=True
     ).fit(normals)
     labels = clustering.labels_
 
-    cluster_means, cluster_means_ind = _filter_clusters(clustering, normals, vis=vis)
+    cluster_means, cluster_means_ind = _filter_clusters(clustering, normals, min_clust_size=config.MIN_CLUST_SIZE)
 
     max_clique = _find_max_clique(labels, cluster_means, cluster_means_ind, eps=eps)
 
