@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "map_metrics"
+version = "0.0.3"
+description = "Short"
+authors = ["Arthur"]
+license = "Apache License 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+networkx = "^2.5.1"
+nptyping = "^1.4.4"
+numpy = "^1.19.5"
+open3d = "^0.14.1"
+scikit-learn = "^0.24.2"
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+pytest = "^6.2.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
