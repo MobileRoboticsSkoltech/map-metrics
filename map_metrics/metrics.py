@@ -154,24 +154,19 @@ def _orth_mpv(
     map_tree = o3d.geometry.KDTreeFlann(pc_map)
     points = np.asarray(pc_map.points)
 
-    pc = pcs[0]
-    pc.estimate_normals(
-        search_param=o3d.geometry.KDTreeSearchParamHybrid(
-            radius=config.KNN_RAD, max_nn=config.MAX_NN
-        )
-    )
-
     if orth_list is None:
+        pc = pcs[0]
         orth_list, _, _ = extract_orthogonal_subsets(pc, config=config, eps=1e-1)
 
     orth_axes_stats = []
 
-    for k, chosen_points in enumerate(orth_list):
+    for chosen_points in orth_list:
         metric = []
-        for i in range(chosen_points.shape[0]):
+        for i in range(np.asarray(chosen_points).shape[0]):
             point = chosen_points[i]
-            [_, idx, _] = map_tree.search_radius_vector_3d(point, config.KNN_RAD)
-            if len(idx) > config.MIN_KNN:
+            _, idx, _ = map_tree.search_radius_vector_3d(point, config.KNN_RAD)
+            # TODO: add 3 to config
+            if len(idx) > 3:
                 metric.append(_plane_variance(points[idx]))
 
         avg_metric = np.median(metric)

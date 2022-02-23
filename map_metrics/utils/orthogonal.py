@@ -2,12 +2,15 @@ import numpy as np
 import networkx as nx
 import open3d as o3d
 
-from typing import Type
+from typing import Type, List
+from nptyping import NDArray
+
 from map_metrics.config import BaseConfig, LidarConfig
 from sklearn.cluster import AgglomerativeClustering
+from pathlib import Path
 
 
-__all__ = ["extract_orthogonal_subsets"]
+__all__ = ["extract_orthogonal_subsets", "read_orthogonal_subset"]
 
 
 def _build_normals_and_lambdas(pc, knn_rad):
@@ -129,3 +132,34 @@ def extract_orthogonal_subsets(pc, config: Type[BaseConfig] = LidarConfig, eps=1
     clique_normals = [cluster_means[i] for i in max_clique]
 
     return orth_subset, orth_normals, clique_normals
+
+
+def read_orthogonal_subset(
+    orth_subset_name: Path, orth_pose_name: Path, ts: List[NDArray[(4, 4), np.float64]]
+):
+    """Read and aggregate an orthogonal subset
+
+    Parameters
+    ----------
+    orth_subset_name: Path
+        Orthogonal subset data
+    orth_pose_name: Path
+        Pose of orthogonal subset in the map
+    ts: List[NDArray[(4, 4), np.float64]]
+        Transformation matrices list (i.e., Point Cloud poses)
+
+    Returns
+    -------
+    orth_subset
+        Aggregated orthogonal subset
+    """
+    orth_list = np.load(str(orth_subset_name), allow_pickle=True)
+    orth_pose = np.loadtxt(str(orth_pose_name), usecols=range(4))
+    orth_pose = np.linalg.inv(ts[0]) @ orth_pose
+
+    return [
+        o3d.geometry.PointCloud(o3d.utility.Vector3dVector(surface))
+        .transform(orth_pose)
+        .points
+        for surface in orth_list
+    ]
