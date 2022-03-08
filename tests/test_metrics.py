@@ -50,7 +50,7 @@ def depth_orthsubset(depth_trajectories):
 @pytest.mark.parametrize(
     "config, metric, expected",
     [
-        (DepthConfig, mme, -3.478778715),
+        (DepthConfig, mme, -3.614438706),
         (DepthConfig, mpv, 0.003242216),
     ],
 )
@@ -63,4 +63,4 @@ def test_mom(depth_pointclouds, depth_trajectories, depth_orthsubset):
     actual_result = mom(
         depth_pointclouds, depth_trajectories, depth_orthsubset, config=DepthConfig
     )
-    assert abs(actual_result - 0.007381899) < 1e-3
+    assert abs(actual_result - 0.006183082) < 1e-3

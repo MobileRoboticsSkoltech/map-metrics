@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "map_metrics"
 version = "0.0.3"
-description = "Short"
-authors = ["Arthur"]
+description = "Map metrics toolkit provides a set of metrics to quantitatively evaluate trajectory quality via estimating consistency of the map aggregated from point clouds."
+authors = ["Anastasiia Kornilova", "Arthur Chains"]
 license = "Apache License 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.6.2"
 networkx = "^2.5.1"
 nptyping = "^1.4.4"
 numpy = "^1.19.5"
@@ -17,6 +17,7 @@ scikit-learn = "^0.24.2"
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
 pytest = "^6.2.5"
+myst-nb = {version = "^0.13.2", python = "^3.9"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

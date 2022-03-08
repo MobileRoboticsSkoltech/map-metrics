@@ -48,8 +48,8 @@ master_doc = "index"
 
 # General information about the project.
 project = "Map Metrics"
-copyright = "2021, Anastasiia Kornilova"
-author = "Anastasiia Kornilova"
+copyright = "2022, Skoltech"
+author = "Anastasiia Kornilova, Arthur Chains"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
