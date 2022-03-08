@@ -11,8 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-__author__ = """Anastasiia Kornilova, Arthur Chains"""
-__email__ = "anastasiia.kornilova@skoltech.ru"
-__version__ = "0.0.4"
-
-from map_metrics.metrics import *
