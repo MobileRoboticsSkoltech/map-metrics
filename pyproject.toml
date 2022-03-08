@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "map_metrics"
-version = "0.0.3"
+version = "0.0.4"
 description = "Map metrics toolkit provides a set of metrics to quantitatively evaluate trajectory quality via estimating consistency of the map aggregated from point clouds."
 authors = ["Anastasiia Kornilova", "Arthur Chains"]
 license = "Apache License 2.0"

@@ -13,6 +13,6 @@
 # limitations under the License.
 __author__ = """Anastasiia Kornilova, Arthur Chains"""
 __email__ = "anastasiia.kornilova@skoltech.ru"
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 from map_metrics.metrics import *
