@@ -46,14 +46,15 @@ TEST(BaseMetrics, MPV){
     std::vector<cilantro::VectorSet3d> PCs = GetPointClouds("data/kitti_00");
 
     auto start_time = std::chrono::system_clock::now();
-    double result_mpv = metrics::GetMPV(PCs, tj_gt);
+    double result_mpv = metrics::GetMPV(std::vector<cilantro::VectorSet3d>(PCs.begin(), PCs.begin() + 5),
+                                        std::vector<Eigen::Matrix4d>(tj_gt.begin(), tj_gt.begin() + 5));
     auto elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now() - start_time);
 
     std::cout << "MPV: " << result_mpv << std::endl;
     std::cout << "Elapsed time (ms): " << elapsed_milliseconds.count() << std::endl;
 
-    ASSERT_LE(std::fabs(result_mpv - 0.08949105590777887), 1e8);
+    ASSERT_LE(std::fabs(result_mpv - 0.019802606170394272), 1e-8);
 }
 
 TEST(BaseMetrics, MME){
@@ -63,12 +64,13 @@ TEST(BaseMetrics, MME){
     std::vector<cilantro::VectorSet3d> PCs = GetPointClouds("data/kitti_00");
 
     auto start_time = std::chrono::system_clock::now();
-    double result_mme = metrics::GetMME(PCs, tj_gt);
+    double result_mme = metrics::GetMME(std::vector<cilantro::VectorSet3d>(PCs.begin(), PCs.begin() + 5),
+                                        std::vector<Eigen::Matrix4d>(tj_gt.begin(), tj_gt.begin() + 5));
     auto elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now() - start_time);
 
     std::cout << "MME: " << result_mme << std::endl;
     std::cout << "Elapsed time (ms): " << elapsed_milliseconds.count() << std::endl;
 
-    ASSERT_LE(std::fabs(result_mme - 1.2553150544133582), 1e8);
+    ASSERT_LE(std::fabs(result_mme - 0.018431360563601673), 1e-8);
 }

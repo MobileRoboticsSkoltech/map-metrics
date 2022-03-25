@@ -9,6 +9,7 @@
 
 #include "Eigen/Core"
 #include "Eigen/Dense"
+#include "Eigen/StdVector"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -39,8 +40,8 @@ namespace metrics_utils{
 
         std::vector<Eigen::Matrix4d> inv_ts;
         Eigen::Matrix4d inv_elem = ts[0].inverse();
-        for (Eigen::Matrix4d const & mx : ts){
-            inv_ts.emplace_back(mx * inv_elem);
+        for (const Eigen::Ref<const Eigen::Matrix4d> mx : ts){
+            inv_ts.push_back(inv_elem * mx);
         }
 
         cilantro::VectorSet3d pc_map_points(3, 0);
