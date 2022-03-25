@@ -6,6 +6,7 @@
 #define MAP_METRICS_METRICS_H
 
 #include "metrics_utils.h"
+#include "config.h"
 
 namespace metrics{
 
@@ -15,8 +16,16 @@ namespace metrics{
     double ComputeBaseMetrics(
             std::vector<cilantro::VectorSet3d> const & pcs_points,
             std::vector<Eigen::Matrix4d> const & ts,
-            int min_knn = 5,
-            double knn_radius = 1.0,
+            config::CustomConfig config = config::LidarConfig(),
+            std::optional<double> (*algorithm)
+            (cilantro::VectorSet3d const & points,
+             std::vector<int> const & indices) = metrics_utils::metrics_algorithm::ComputeEigenvalues
+            );
+
+    double ComputeOrthogonalMetrics(
+            std::vector<cilantro::VectorSet3d> const & pcs_points,
+            std::vector<Eigen::Matrix4d> const & ts, 
+            config::CustomConfig config = config::LidarConfig(),
             std::optional<double> (*algorithm)
             (cilantro::VectorSet3d const & points,
              std::vector<int> const & indices) = metrics_utils::metrics_algorithm::ComputeEigenvalues
@@ -24,11 +33,15 @@ namespace metrics{
 
     // MPV. Mean Plane Variance
     double GetMPV(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
-               int min_knn = 5, double knn_rad = 1.0);
+               config::CustomConfig config = config::LidarConfig());
 
     // MME. Mean Map Entropy
     double GetMME(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
-               int min_knn = 5, double knn_rad = 1.0);
+               config::CustomConfig config = config::LidarConfig());
+
+    // MOM. Mutually Orthogonal Metric 
+    double GetMOM(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
+               config::CustomConfig config = config::LidarConfig());
 } // namespace metrics
 
 #endif //MAP_METRICS_METRICS_H
