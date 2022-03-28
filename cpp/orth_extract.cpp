@@ -10,7 +10,8 @@ namespace orth_extract{
     using KDTree = cilantro::KDTree3d<>;
 
     void ExtractOrthogonalSubset(PointCloud pivot_pc, config::CustomConfig config, double eps){
-        PointCloud cut_pc = PointCloud(); // estimate_normals
+        PointCloud cut_pc = BuildNormalsAndLambdas(pivot_pc, config.knn_rad);
+        auto normals = cut_pc.normals;
 
     }
 
