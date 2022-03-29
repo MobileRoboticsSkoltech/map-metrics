@@ -12,7 +12,9 @@ option(BUILD_TESTS "Build an executable with tests" ON)
 # Set this flag ON if you want to build Python library interface
 option(BUILD_PYTHON_MODULE "Build the python module" OFF)
 # Address sanitizer
-option(SANITIZE_ADDRESS "Address sanitizer" OFF) 
+option(USE_ASAN "Address sanitizer" OFF) 
+# Memory sanitizer
+option(USE_MSAN "Memory sanitizer" OFF)
 
 if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
@@ -29,7 +31,7 @@ endif()
 
 # # Enable sanitizer by default in Debug mode
 # if (CMAKE_BUILD_TYPE MATCHES Debug)
-#     set(SANITIZE_ADDRESS ON)
+#     set(USE_ASAN ON)
 # endif()
 
 # If Build type is Release, then turn on optimizations
@@ -37,8 +39,12 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 endif()
 
-if (SANITIZE_ADDRESS)
+if (USE_ASAN)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+endif()
+
+if (USE_MSAN)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=memory -fno-omit-frame-pointer")
 endif()
 
 # Prevent In-Source Builds

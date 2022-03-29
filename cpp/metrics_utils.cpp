@@ -38,25 +38,21 @@ namespace metrics_utils{
     PointCloud AggregateMap(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
         assert (pcs.size() == ts.size());
 
-        std::vector<Eigen::Matrix4d> inv_ts;
+        std::vector<Eigen::Matrix4d> inv_ts(ts.size());
         Eigen::Matrix4d inv_elem = ts[0].inverse();
-        for (const Eigen::Ref<const Eigen::Matrix4d> mx : ts){
-            inv_ts.push_back(inv_elem * mx);
+        for (Eigen::Index i = 0; i < ts.size(); ++i){
+            inv_ts[i] = inv_elem * ts[i];
         }
 
-        cilantro::VectorSet3d pc_map_points(3, 0);
+        PointCloud pc_map{};
+
         for (size_t i = 0; i < pcs.size(); ++i){
             cilantro::RigidTransform3d transform_mx(inv_ts[i]);
-            cilantro::VectorSet3d transformed_points = pcs[i].transformed(transform_mx).points;
-
-            Eigen::Index old_size = pc_map_points.cols();
-            pc_map_points.conservativeResize(3, old_size + transformed_points.cols());
-            for (Eigen::Index col_idx = 0; col_idx < transformed_points.cols(); ++col_idx){
-                pc_map_points.col(old_size + col_idx) = transformed_points.col(col_idx);
-            }
+            PointCloud pc_transformed = pcs[i].transformed(transform_mx);
+            pc_map.append(pc_transformed);
         }
 
-        return PointCloud{pc_map_points};
+        return pc_map;
     }
 
     std::vector<int> GetRadiusSearchIndices(KDTree const & tree,
