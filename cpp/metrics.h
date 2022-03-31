@@ -9,6 +9,8 @@
 #include "config.h"
 
 namespace metrics{
+    using PointCloud = cilantro::PointCloud3d;
+    using KDTree = cilantro::KDTree3d<>;
 
     // Available Base metrics are:
     // MPV -- Mean Plane Variance
@@ -19,7 +21,7 @@ namespace metrics{
             config::CustomConfig config = config::LidarConfig(),
             std::optional<double> (*algorithm)
             (cilantro::VectorSet3d const & points,
-             std::vector<int> const & indices) = metrics_utils::metrics_algorithm::ComputeEigenvalues
+             std::vector<Eigen::Index> const & indices) = metrics_utils::metrics_algorithm::ComputeEigenvalues
             );
 
     double ComputeOrthogonalMetrics(
@@ -28,7 +30,7 @@ namespace metrics{
             config::CustomConfig config = config::LidarConfig(),
             std::optional<double> (*algorithm)
             (cilantro::VectorSet3d const & points,
-             std::vector<int> const & indices) = metrics_utils::metrics_algorithm::ComputeEigenvalues
+             std::vector<Eigen::Index> const & indices) = metrics_utils::metrics_algorithm::ComputeEigenvalues
             );
 
     // MPV. Mean Plane Variance
