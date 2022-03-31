@@ -26,16 +26,16 @@ namespace metrics_utils{
         return (centered.adjoint() * centered) / (static_cast<double>(M.rows()) - 1.0);
     }
 
-    Eigen::MatrixX3d TransformPointIdxToMatrix(cilantro::VectorSet3d const & points, std::vector<int> const & idx){
+    Eigen::MatrixX3d TransformPointIdxToMatrix(cilantro::VectorSet3d const & points, std::vector<Eigen::Index> const & idx){
         Eigen::MatrixX3d matrix(idx.size(), 3);
         Eigen::Index row_idx = 0;
         for (const auto & i : idx){
-            matrix.row(row_idx++) = points.col(static_cast<Eigen::Index>(i));
+            matrix.row(row_idx++) = points.col(i);
         }
         return matrix;
     }
 
-    PointCloud AggregateMap(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
+    PointCloud* AggregateMap(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts){
         assert (pcs.size() == ts.size());
 
         std::vector<Eigen::Matrix4d> inv_ts(ts.size());
@@ -44,23 +44,23 @@ namespace metrics_utils{
             inv_ts[i] = inv_elem * ts[i];
         }
 
-        PointCloud pc_map{};
+        auto pc_map = std::make_unique<PointCloud>();
 
         for (size_t i = 0; i < pcs.size(); ++i){
             cilantro::RigidTransform3d transform_mx(inv_ts[i]);
             PointCloud pc_transformed = pcs[i].transformed(transform_mx);
-            pc_map.append(pc_transformed);
+            pc_map->append(pc_transformed);
         }
 
-        return pc_map;
+        return pc_map.release();
     }
 
-    std::vector<int> GetRadiusSearchIndices(KDTree const & tree,
-                                                       Eigen::Vector3d const & query, double radius){
-        cilantro::NeighborSet<double> nn = tree.radiusSearch(query, radius);
-        std::vector<int> indices(nn.size());
+    std::vector<Eigen::Index> GetRadiusSearchIndices(KDTree const & tree,
+                                                     const Eigen::Ref<const Eigen::Vector3d> query, double radius){
+        cilantro::NeighborSet<double> nn = tree.radiusSearch(query, pow(radius, 2.0));
+        std::vector<Eigen::Index> indices(nn.size());
         for (size_t i = 0; i < nn.size(); ++i){
-            indices[i] = static_cast<int>(nn[i].index);
+            indices[i] = nn[i].index;
         }
 
         return indices;
@@ -68,7 +68,7 @@ namespace metrics_utils{
 
     namespace metrics_algorithm{
         std::optional<double> ComputeEigenvalues(cilantro::VectorSet3d const & points,
-                                   std::vector<int> const & indices){
+                                   std::vector<Eigen::Index> const & indices){
             Eigen::MatrixX3d tmp = TransformPointIdxToMatrix(points, indices);
             Eigen::MatrixX3d cov_matrix = FindCov(tmp);
             Eigen::VectorXd eigenvalues = cov_matrix.eigenvalues().real();
@@ -76,7 +76,7 @@ namespace metrics_utils{
         }
 
         std::optional<double> ComputeEntropy(cilantro::VectorSet3d const & points,
-                                              std::vector<int> const & indices){
+                                              std::vector<Eigen::Index> const & indices){
             Eigen::MatrixXd tmp = TransformPointIdxToMatrix(points, indices);
             Eigen::MatrixXd cov_matrix = FindCov(tmp);
             double det =  (2. * M_PI * M_E * cov_matrix).determinant();

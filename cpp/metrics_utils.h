@@ -21,19 +21,19 @@ namespace metrics_utils {
     //    x1   ...   xn
     //  ( y1 ) ... ( yn )
     //    z1   ...   zn
-    Eigen::MatrixX3d TransformPointIdxToMatrix(cilantro::VectorSet3d const & points, std::vector<int> const & idx);
+    Eigen::MatrixX3d TransformPointIdxToMatrix(cilantro::VectorSet3d const & points, std::vector<Eigen::Index> const & idx);
 
-    PointCloud AggregateMap(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
+    PointCloud* AggregateMap(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
 
-    std::vector<int> GetRadiusSearchIndices(KDTree const & tree,
-                                                       Eigen::Vector3d const & query, double radius);
+    std::vector<Eigen::Index> GetRadiusSearchIndices(KDTree const & tree,
+                                                       const Eigen::Ref<const Eigen::Vector3d> query, double radius);
 
     namespace metrics_algorithm{
         std::optional<double> ComputeEigenvalues(cilantro::VectorSet3d const & points,
-                                                  std::vector<int> const & indices);
+                                                  std::vector<Eigen::Index> const & indices);
 
         std::optional<double> ComputeEntropy(cilantro::VectorSet3d const & points,
-                                              std::vector<int> const & indices);
+                                              std::vector<Eigen::Index> const & indices);
     } // namespace metrics_algorithm
 } // namespace metrics_utils
 

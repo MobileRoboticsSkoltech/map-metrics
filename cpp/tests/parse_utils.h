@@ -25,6 +25,13 @@ namespace parse_utils{
     std::vector<double> ParseCSV(std::filesystem::path const & path);
 
     std::vector<std::vector<double>> GetPointClouds(std::filesystem::path const & path);
+
+    Eigen::Matrix4d VectorToEigenMatrix(std::vector<std::vector<double>> vec);
+
+    cilantro::VectorSet3d VectorToPointCloudPoints(std::vector<double> vec);
+
+    std::vector<Eigen::Matrix4d> CalibrateTrajectory(std::vector<std::vector<double>> const & calib,
+                                                     std::vector<std::vector<double>> const & trajectory);
 }
 
 #endif //MAP_METRICS_PARSE_UTILS_H
