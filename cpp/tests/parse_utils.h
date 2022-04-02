@@ -32,6 +32,14 @@ namespace parse_utils{
 
     std::vector<Eigen::Matrix4d> CalibrateTrajectory(std::vector<std::vector<double>> const & calib,
                                                      std::vector<std::vector<double>> const & trajectory);
+
+    namespace depth_parse{
+        std::vector<cilantro::VectorSet3d> GetDepthPCs(const char * path);
+
+        std::vector<double> ParsePoses(std::filesystem::path path);
+
+        std::vector<Eigen::Matrix4d> GetDepthPoses(const char * path);
+    }
 }
 
 #endif //MAP_METRICS_PARSE_UTILS_H
