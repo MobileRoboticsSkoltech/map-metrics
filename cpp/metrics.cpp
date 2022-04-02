@@ -4,6 +4,7 @@
 
 #include "metrics_utils.h"
 #include "metrics.h"
+#include "orth_extract.h"
 
 #include <numeric>
 #include <memory>
@@ -50,17 +51,17 @@ namespace metrics {
             (cilantro::VectorSet3d const & points,
              std::vector<Eigen::Index> const & indices)){
         
-        // std::vector<cilantro::PointCloud3d> pcs(pcs_points.size());
-        // for (size_t i = 0; i < pcs_points.size(); ++i){
-        //     pcs[i] = cilantro::PointCloud3d(pcs_points[i]);
-        // }
+        std::vector<cilantro::PointCloud3d> pcs(pcs_points.size());
+        for (size_t i = 0; i < pcs_points.size(); ++i){
+            pcs[i] = cilantro::PointCloud3d(pcs_points[i]);
+        }
 
-        // metrics_utils::PointCloud pc_map = metrics_utils::AggregateMap(pcs, ts);
+        auto pc_map = std::make_unique<PointCloud>(*metrics_utils::AggregateMap(pcs, ts));
 
-        // metrics_utils::KDTree map_tree(pc_map.points);
-        // cilantro::VectorSet3d points = pc_map.points;
+        metrics_utils::KDTree map_tree(pc_map->points);
+        cilantro::VectorSet3d points = pc_map->points;
 
-        // auto orth_list = ExtractOrthogonalSubset
+        // auto orth_list = orth_extract::ExtractOrthogonalSubset()
         return 0.0;
     }
 
