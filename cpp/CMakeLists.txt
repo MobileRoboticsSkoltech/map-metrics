@@ -1,4 +1,5 @@
-set(SOURCES metrics.cpp metrics.h metrics_utils.cpp orth_extract.cpp metrics_utils.h config.h orth_extract.h)
+set(SOURCES metrics.cpp metrics.h metrics_utils.cpp orth_extract.cpp 
+metrics_utils.h config.h orth_extract.h clustering.h clustering.cpp)
 
 add_library(map_metrics_cpp SHARED ${SOURCES})
 

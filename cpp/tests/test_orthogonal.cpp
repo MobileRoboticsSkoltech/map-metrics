@@ -6,6 +6,7 @@
 #include "orth_extract.h"
 
 #include <iostream>
+#include <dataanalysis.h>
 
 
 // TEST(Orthogonal, NormalEstimation){
@@ -27,7 +28,30 @@ TEST(Orthogonal, BuildNormalsAndLambdas){
 
     auto cut_pc = orth_extract::EstimateNormals(pc, 0.2, 30);
     auto normals = cut_pc.normals;
+
+    // Define clusterizer
+    alglib::clusterizerstate s;
+    alglib::ahcreport rep;
+    alglib::clusterizercreate(s);
+
+    // Fit Data
+    alglib::real_2d_array xy;
+    xy.setcontent(normals.cols(), 3, normals.data());
+    constexpr int disttype = 2;
+
+    // Labels variable definition
+    alglib::integer_1d_array labels;
+    alglib::integer_1d_array cz;
+    alglib::ae_int_t number_of_clusters;
+
+    // Clustering
+    alglib::clusterizersetpoints(s, xy, disttype);
+    alglib::clusterizerrunahc(s, rep);
     
-    // std::cout << "Normals(0):\n" << cut_pc.normals.col(0) << '\n';
-    // std::cout << "Normals(25003):\n" << cut_pc.normals.col(25003) << '\n';
+    // top clusters from  hierarchical  clusterization  tree which are separated by distance >R
+    // Each  of  the clusters stand on its own, no heirarchy
+    alglib::clusterizerseparatedbydist(rep, 1e-1, number_of_clusters, labels, cz);
+
+    //std::cout << labels.tostring().c_str() << std::endl;
+    
 }
