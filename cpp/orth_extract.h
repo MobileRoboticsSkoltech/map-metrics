@@ -2,6 +2,7 @@
 #define MAP_METRICS_ORTH_EXTRACT_H
 
 #include "config.h"
+#include "clustering.h"
 
 #include <cilantro/utilities/point_cloud.hpp>
 
@@ -15,6 +16,8 @@ namespace orth_extract{
     PointCloud EstimateNormals(PointCloud pc, double knn_rad, int max_nn);
 
     PointCloud BuildNormalsAndLambdas(PointCloud const & pc, double knn_rad);
+
+    int FindMaxClique(clustering::ClusterMeans const & clusterizer, double eps);
 }
 
 #endif //MAP_METRICS_ORTH_EXTRACT_H

@@ -15,8 +15,10 @@ namespace orth_extract{
         PointCloud cut_pc = BuildNormalsAndLambdas(pivot_pc, config.knn_rad);
         auto normals = cut_pc.normals;
 
-        clustering::ClusterLabels labels = clustering::ClusterizeAHC(normals, 1e-1);
-        
+        clustering::ClusterMeans labels = clustering::ClusterizeAHC(normals, 1e-1);
+        labels.filterClusters(normals, config.min_clust_size);
+
+        auto max_clique = FindMaxClique(labels, 1e-1);
     }
 
     PointCloud EstimateNormals(PointCloud pc, double knn_rad, int max_nn){
@@ -66,5 +68,9 @@ namespace orth_extract{
         new_pc.normals = pc_normals;
 
         return new_pc;
+    }
+
+    int FindMaxClique(clustering::ClusterMeans const & clusterizer, double eps){
+        return 0;
     }
 }
