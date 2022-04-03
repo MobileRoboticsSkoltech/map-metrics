@@ -4,18 +4,36 @@
 
 namespace clustering{
     ClusterMeans::ClusterMeans(alglib::integer_1d_array const & labels, Eigen::Index cluster_number) 
-        : cluster_number_(cluster_number), labels_(Eigen::VectorXd(labels.length())),
+        : cluster_number_(cluster_number), labels_(Eigen::VectorXi(labels.length())),
           cluster_means_(), cluster_idx_(){
             for (Eigen::Index i = 0; i < labels.length(); ++i) labels_[i] = labels[i];
     }
 
     void ClusterMeans::filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int min_clust_size){
         cluster_idx_.resize(cluster_number_);
-        cluster_means_.resize(cluster_number_);
+        cluster_means_.resize(3, cluster_number_);
+
+        Eigen::Index big_cluster_size = 0;
 
         for (Eigen::Index i = 0; i < cluster_number_; ++i){
-            // ...
+            auto idx = (labels_.array() == i);
+            if (idx.count() > min_clust_size){
+                // TODO: Clean up! Find better solution for 'np.where'
+                cilantro::VectorSet3d normals_at_idx(3, idx.count());
+                Eigen::Index normals_at_idx_size = 0;
+                for (Eigen::Index col_idx = 0; col_idx < idx.size(); ++col_idx){
+                    if (idx[col_idx]) normals_at_idx.col(normals_at_idx_size++) = points.col(col_idx);
+                }
+
+                cluster_means_.col(big_cluster_size) = normals_at_idx.rowwise().mean().normalized();
+                cluster_idx_[big_cluster_size] = i;
+                ++big_cluster_size;
+            }
         }
+
+        // Shrink to fit
+        cluster_means_.conservativeResize(big_cluster_size);
+        cluster_idx_.conservativeResize(big_cluster_size);
     }
     
     

@@ -16,8 +16,8 @@ namespace clustering{
         void filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int min_clust_size);
 
      private:
-        Eigen::VectorXd labels_;
-        Eigen::VectorXd cluster_means_;
+        Eigen::VectorXi labels_;
+        cilantro::VectorSet3d cluster_means_;
         Eigen::VectorXi cluster_idx_;
         Eigen::Index cluster_number_;
     };
