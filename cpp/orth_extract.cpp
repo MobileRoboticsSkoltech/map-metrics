@@ -1,5 +1,6 @@
 #include "orth_extract.h"
 #include "metrics_utils.h"
+#include "clustering.h"
 
 #include <cilantro/core/kd_tree.hpp>
 #include <dataanalysis.h>
@@ -14,7 +15,8 @@ namespace orth_extract{
         PointCloud cut_pc = BuildNormalsAndLambdas(pivot_pc, config.knn_rad);
         auto normals = cut_pc.normals;
 
-        // Need to extract labels after Agglomerative Clusteting on normals
+        clustering::ClusterLabels labels = clustering::ClusterizeAHC(normals, 1e-1);
+        
     }
 
     PointCloud EstimateNormals(PointCloud pc, double knn_rad, int max_nn){
