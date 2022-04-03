@@ -3,10 +3,23 @@
 #include <dataanalysis.h>
 
 namespace clustering{
-    ClusterLabels::ClusterLabels(alglib::integer_1d_array const & labels, Eigen::Index cluster_number) 
-        : cluster_number_(cluster_number), labels_(labels) {}
+    ClusterMeans::ClusterMeans(alglib::integer_1d_array const & labels, Eigen::Index cluster_number) 
+        : cluster_number_(cluster_number), labels_(Eigen::VectorXd(labels.length())),
+          cluster_means_(), cluster_idx_(){
+            for (Eigen::Index i = 0; i < labels.length(); ++i) labels_[i] = labels[i];
+    }
+
+    void ClusterMeans::filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int min_clust_size){
+        cluster_idx_.resize(cluster_number_);
+        cluster_means_.resize(cluster_number_);
+
+        for (Eigen::Index i = 0; i < cluster_number_; ++i){
+            // ...
+        }
+    }
     
-    ClusterLabels ClusterizeAHC(Eigen::Ref<const cilantro::VectorSet3d> const points,
+    
+    ClusterMeans ClusterizeAHC(Eigen::Ref<const cilantro::VectorSet3d> const points,
                                    double distance_treshold){
         // Define clusterizer
         alglib::clusterizerstate s;
@@ -29,7 +42,7 @@ namespace clustering{
         // Get top clusters from AHC tree which are separated by distance treshold
         alglib::clusterizerseparatedbydist(rep, distance_treshold, number_of_clusters, labels, cz);
 
-        return ClusterLabels(labels, number_of_clusters);
+        return ClusterMeans(labels, number_of_clusters);
     }
 
 }
