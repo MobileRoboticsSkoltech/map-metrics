@@ -9,6 +9,10 @@ namespace clustering{
             for (Eigen::Index i = 0; i < labels.length(); ++i) labels_[i] = labels[i];
     }
 
+    cilantro::VectorSet3d ClusterMeans::getMeans() const {
+        return this->cluster_means_;
+    }
+
     void ClusterMeans::filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int min_clust_size){
         cluster_idx_.resize(cluster_number_);
         cluster_means_.resize(3, cluster_number_);
@@ -32,8 +36,8 @@ namespace clustering{
         }
 
         // Shrink to fit
-        cluster_means_.conservativeResize(big_cluster_size);
         cluster_idx_.conservativeResize(big_cluster_size);
+        cluster_means_.conservativeResize(3, big_cluster_size);
     }
     
     

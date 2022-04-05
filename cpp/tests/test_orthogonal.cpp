@@ -4,6 +4,7 @@
 
 #include "metrics.h"
 #include "orth_extract.h"
+#include "clustering.h"
 
 #include <iostream>
 #include <dataanalysis.h>
@@ -56,17 +57,23 @@
     
 // }
 
-TEST(Random, RandTest){
-    cilantro::VectorSet3d a(3, 3);
-    a << 1, 2, 3, 4, 5, 6, 7, 8, 9;
+TEST(Orthogonal, FilterClusters){
+    std::vector<cilantro::VectorSet3d> PCs = parse_utils::depth_parse::GetDepthPCs("data/depth/pcs");
+    auto pc = cilantro::PointCloud3d(PCs[2]);  // PC-0091.ply
 
-    std::cout << "Vector a: \n" << a << std::endl;
+    // Note: cut_pc gives same result as Python version
+    auto cut_pc = orth_extract::EstimateNormals(pc, 0.2, 30);
+    auto normals = cut_pc.normals;
 
-    Eigen::VectorXd bb(5);
-    bb << 1, 2, 3, 1, 5;
+    clustering::ClusterMeans cluster_means = clustering::ClusterizeAHC(normals, 2e-1);
+    cluster_means.filterClusters(normals, 5);
 
-    std::cout << "COLS: " << (bb.array() == 1).cols() << "ROWS: " << (bb.array() == 1).rows() << std::endl; 
+    auto cluster_means_pc = cilantro::PointCloud3d();
+    cluster_means_pc.points = cluster_means.getMeans();
 
-    // Put normalized mean of a normal vectors
-    std::cout << a.rowwise().mean().normalized() << std::endl;
+    cluster_means_pc.toPLYFile("cluster_means_pc_cpp_2.ply");
 }
+
+// TEST(Orthogonal, CliqueEstimation){
+
+// }

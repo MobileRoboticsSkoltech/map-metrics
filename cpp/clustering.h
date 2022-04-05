@@ -14,6 +14,8 @@ namespace clustering{
         explicit ClusterMeans(alglib::integer_1d_array const & labels, Eigen::Index cluster_number);
 
         void filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int min_clust_size);
+        
+        cilantro::VectorSet3d getMeans() const;
 
      private:
         Eigen::VectorXi labels_;
