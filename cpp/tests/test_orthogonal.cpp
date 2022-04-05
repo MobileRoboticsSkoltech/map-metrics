@@ -57,7 +57,24 @@
     
 // }
 
-TEST(Orthogonal, FilterClusters){
+// TEST(Orthogonal, FilterClusters){
+//     std::vector<cilantro::VectorSet3d> PCs = parse_utils::depth_parse::GetDepthPCs("data/depth/pcs");
+//     auto pc = cilantro::PointCloud3d(PCs[2]);  // PC-0091.ply
+
+//     // Note: cut_pc gives same result as Python version
+//     auto cut_pc = orth_extract::EstimateNormals(pc, 0.2, 30);
+//     auto normals = cut_pc.normals;
+
+//     clustering::ClusterMeans cluster_means = clustering::ClusterizeAHC(normals, 1e-1);
+//     cluster_means.filterClusters(normals, 5);
+
+//     auto cluster_means_pc = cilantro::PointCloud3d();
+//     cluster_means_pc.points = cluster_means.getMeans();
+
+//     cluster_means_pc.toPLYFile("cluster_means_pc_cpp_2.ply");
+// }
+
+TEST(Orthogonal, CliqueEstimation){
     std::vector<cilantro::VectorSet3d> PCs = parse_utils::depth_parse::GetDepthPCs("data/depth/pcs");
     auto pc = cilantro::PointCloud3d(PCs[2]);  // PC-0091.ply
 
@@ -65,15 +82,8 @@ TEST(Orthogonal, FilterClusters){
     auto cut_pc = orth_extract::EstimateNormals(pc, 0.2, 30);
     auto normals = cut_pc.normals;
 
-    clustering::ClusterMeans cluster_means = clustering::ClusterizeAHC(normals, 2e-1);
+    clustering::ClusterMeans cluster_means = clustering::ClusterizeAHC(normals, 1e-1);
     cluster_means.filterClusters(normals, 5);
 
-    auto cluster_means_pc = cilantro::PointCloud3d();
-    cluster_means_pc.points = cluster_means.getMeans();
-
-    cluster_means_pc.toPLYFile("cluster_means_pc_cpp_2.ply");
+    
 }
-
-// TEST(Orthogonal, CliqueEstimation){
-
-// }

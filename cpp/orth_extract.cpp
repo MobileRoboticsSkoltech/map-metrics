@@ -1,6 +1,7 @@
 #include "orth_extract.h"
 #include "metrics_utils.h"
 #include "clustering.h"
+#include "max_clique.h"
 
 #include <cilantro/core/kd_tree.hpp>
 #include <dataanalysis.h>
@@ -18,7 +19,7 @@ namespace orth_extract{
         clustering::ClusterMeans labels = clustering::ClusterizeAHC(normals, 1e-1);
         labels.filterClusters(normals, config.min_clust_size);
 
-        auto max_clique = FindMaxClique(labels, 1e-1);
+        // auto max_clique = FindMaxClique(labels, 1e-1);
     }
 
     PointCloud EstimateNormals(PointCloud pc, double knn_rad, int max_nn){
@@ -68,9 +69,5 @@ namespace orth_extract{
         new_pc.normals = pc_normals;
 
         return new_pc;
-    }
-
-    int FindMaxClique(clustering::ClusterMeans const & clusterizer, double eps){
-        return 0;
     }
 }
