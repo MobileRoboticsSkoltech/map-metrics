@@ -13,6 +13,10 @@ namespace clustering{
         return this->cluster_means_;
     }
 
+    Eigen::Index ClusterMeans::getClusterNumber() const{
+        return this->cluster_number_;
+    }
+
     void ClusterMeans::filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int min_clust_size){
         cluster_idx_.resize(cluster_number_);
         cluster_means_.resize(3, cluster_number_);

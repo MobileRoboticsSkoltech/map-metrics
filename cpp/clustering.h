@@ -17,6 +17,8 @@ namespace clustering{
         
         cilantro::VectorSet3d getMeans() const;
 
+        Eigen::Index getClusterNumber() const;
+
      private:
         Eigen::VectorXi labels_;
         cilantro::VectorSet3d cluster_means_;
