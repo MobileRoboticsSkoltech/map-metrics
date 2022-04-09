@@ -42,6 +42,7 @@ namespace clustering{
         // Shrink to fit
         cluster_idx_.conservativeResize(big_cluster_size);
         cluster_means_.conservativeResize(3, big_cluster_size);
+        this->cluster_number_ = big_cluster_size;
     }
     
     
