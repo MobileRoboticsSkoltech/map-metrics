@@ -12,14 +12,29 @@ namespace orth_extract{
     using PointCloud = cilantro::PointCloud3d;
     using KDTree = cilantro::KDTree3d<>;
 
-    void ExtractOrthogonalSubset(PointCloud pivot_pc, config::CustomConfig config, double eps){
+    std::vector<cilantro::VectorSet3d> ExtractOrthogonalSubset(PointCloud pivot_pc, config::CustomConfig config, double eps){
         PointCloud cut_pc = BuildNormalsAndLambdas(pivot_pc, config.knn_rad);
         auto normals = cut_pc.normals;
 
-        clustering::ClusterMeans labels = clustering::ClusterizeAHC(normals, 1e-1);
-        labels.filterClusters(normals, config.min_clust_size);
+        clustering::ClusterMeans clusterizer = clustering::ClusterizeAHC(normals, 1e-1);
+        clusterizer.filterClusters(normals, config.min_clust_size);
 
-        // auto max_clique = FindMaxClique(labels, 1e-1);
+        std::vector<Eigen::Index> max_clique = max_clique::FindMaxClique(clusterizer, 1e-1);
+
+        std::vector<cilantro::VectorSet3d> orthogonal_subset;
+        orthogonal_subset.reserve(max_clique.size());
+
+        for (Eigen::Index idx : max_clique){
+            auto idx_mask = (clusterizer.getLabels().array() == clusterizer.getIdx()[idx]);
+            cilantro::VectorSet3d new_points(3, idx_mask.count());
+            Eigen::Index new_points_idx = 0;
+            for (Eigen::Index i = 0; i < idx_mask.size(); ++i){
+                if (idx_mask[i]) new_points.col(new_points_idx++) = cut_pc.points.col(i);
+            }
+            orthogonal_subset.push_back(new_points);
+        }
+
+        return orthogonal_subset;
     }
 
     PointCloud EstimateNormals(PointCloud pc, double knn_rad, int max_nn){
