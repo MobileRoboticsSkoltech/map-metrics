@@ -23,7 +23,7 @@ namespace metrics {
             pcs[i] = PointCloud(pcs_points[i]);
         }
 
-        auto pc_map = std::make_unique<PointCloud>(*metrics_utils::AggregateMap(pcs, ts));
+        std::shared_ptr<PointCloud> pc_map = metrics_utils::AggregateMap(pcs, ts);
 
         auto map_tree = std::make_unique<KDTree>(pc_map->points);
         cilantro::VectorSet3d points = pc_map->points;
@@ -56,7 +56,7 @@ namespace metrics {
             pcs[i] = cilantro::PointCloud3d(pcs_points[i]);
         }
 
-        auto pc_map = std::make_unique<PointCloud>(*metrics_utils::AggregateMap(pcs, ts));
+        std::shared_ptr<PointCloud> pc_map = metrics_utils::AggregateMap(pcs, ts);
 
         metrics_utils::KDTree map_tree(pc_map->points);
         cilantro::VectorSet3d points = pc_map->points;

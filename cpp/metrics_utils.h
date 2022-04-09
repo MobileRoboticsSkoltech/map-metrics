@@ -23,7 +23,7 @@ namespace metrics_utils {
     //    z1   ...   zn
     Eigen::MatrixX3d TransformPointIdxToMatrix(cilantro::VectorSet3d const & points, std::vector<Eigen::Index> const & idx);
 
-    PointCloud* AggregateMap(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
+    std::shared_ptr<PointCloud> AggregateMap(std::vector<PointCloud> const & pcs, std::vector<Eigen::Matrix4d> const & ts);
 
     std::vector<Eigen::Index> GetRadiusSearchIndices(KDTree const & tree,
                                                        const Eigen::Ref<const Eigen::Vector3d> query, double radius);
