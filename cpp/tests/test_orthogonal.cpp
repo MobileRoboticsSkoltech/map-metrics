@@ -2,6 +2,7 @@
 
 #include "parse_utils.h"
 
+#include "max_clique.h"
 #include "metrics.h"
 #include "orth_extract.h"
 #include "clustering.h"
@@ -85,5 +86,5 @@ TEST(Orthogonal, CliqueEstimation){
     clustering::ClusterMeans cluster_means = clustering::ClusterizeAHC(normals, 1e-1);
     cluster_means.filterClusters(normals, 5);
 
-    
+    max_clique::FindMaxClique(cluster_means, 1e-1);
 }

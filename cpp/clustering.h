@@ -15,7 +15,11 @@ namespace clustering{
 
         void filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int min_clust_size);
         
-        cilantro::VectorSet3d getMeans() const;
+        const cilantro::VectorSet3d & getMeans() const;
+
+        const Eigen::VectorXi & getIdx() const;
+
+        const Eigen::VectorXi & getLabels() const;
 
         Eigen::Index getClusterNumber() const;
 
