@@ -9,8 +9,16 @@ namespace clustering{
             for (Eigen::Index i = 0; i < labels.length(); ++i) labels_[i] = labels[i];
     }
 
-    cilantro::VectorSet3d ClusterMeans::getMeans() const {
+    const cilantro::VectorSet3d & ClusterMeans::getMeans() const{
         return this->cluster_means_;
+    }
+
+    const Eigen::VectorXi & ClusterMeans::getIdx() const{
+        return this->cluster_idx_;
+    }
+
+    const Eigen::VectorXi & ClusterMeans::getLabels() const{
+        return this->labels_;
     }
 
     Eigen::Index ClusterMeans::getClusterNumber() const{
