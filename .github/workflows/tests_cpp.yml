@@ -21,7 +21,7 @@ jobs:
 
       # You can define a matrix of different job configurations
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -29,6 +29,15 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v2
 
+      - name: Install boost
+        run: |
+             if [ "$RUNNER_OS" == "Linux" ]; then 
+                sudo apt install -y libboost-graph-dev
+             elif [ "$RUNNER_OS" == "macOS" ]; then 
+                brew install boost
+             fi
+        shell: bash
+        
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       - name: Configure CMake
