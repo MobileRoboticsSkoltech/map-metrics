@@ -30,7 +30,8 @@ namespace metrics{
             config::CustomConfig config = config::LidarConfig(),
             std::optional<double> (*algorithm)
             (cilantro::VectorSet3d const & points,
-             std::vector<Eigen::Index> const & indices) = metrics_utils::metrics_algorithm::ComputeEigenvalues
+             std::vector<Eigen::Index> const & indices) = metrics_utils::metrics_algorithm::ComputeEigenvalues,
+            std::vector<cilantro::VectorSet3d> const & orth_subset = std::vector<cilantro::VectorSet3d>()
             );
 
     // MPV. Mean Plane Variance
