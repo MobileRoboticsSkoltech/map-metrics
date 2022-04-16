@@ -9,7 +9,7 @@
 namespace orth_extract{
     using PointCloud = cilantro::PointCloud3d;
 
-    std::vector<cilantro::VectorSet3d> ExtractOrthogonalSubset(PointCloud pivot_pc, 
+    std::vector<cilantro::VectorSet3d> ExtractOrthogonalSubset(const PointCloud& pivot_pc,
                                     config::CustomConfig config = config::LidarConfig(),
                                     double eps = 1e-1);
 

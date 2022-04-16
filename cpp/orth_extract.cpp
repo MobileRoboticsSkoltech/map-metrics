@@ -12,8 +12,8 @@ namespace orth_extract{
     using PointCloud = cilantro::PointCloud3d;
     using KDTree = cilantro::KDTree3d<>;
 
-    std::vector<cilantro::VectorSet3d> ExtractOrthogonalSubset(PointCloud pivot_pc, config::CustomConfig config, double eps){
-        PointCloud cut_pc = BuildNormalsAndLambdas(pivot_pc, config.knn_rad);
+    std::vector<cilantro::VectorSet3d> ExtractOrthogonalSubset(const PointCloud& pivot_pc, config::CustomConfig config, double eps){
+        PointCloud cut_pc = EstimateNormals(pivot_pc, config.knn_rad, config.max_nn);
         auto normals = cut_pc.normals;
 
         clustering::ClusterMeans clusterizer = clustering::ClusterizeAHC(normals, 1e-1);
