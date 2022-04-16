@@ -79,7 +79,8 @@ namespace metrics {
                 }
                 alglib::real_1d_array tmp;
                 tmp.setcontent(static_cast<int>(metric.size()), metric.data());
-                double avg_metric = alglib::samplemean(tmp);
+                double avg_metric;
+                alglib::samplemedian(tmp, avg_metric);
                 orth_axes_stats.push_back(avg_metric);
             }
         }
