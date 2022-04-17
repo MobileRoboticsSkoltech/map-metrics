@@ -77,12 +77,12 @@ namespace metrics {
                     if (result.has_value())
                         metric.push_back(result.value());
                 }
-                alglib::real_1d_array tmp;
-                tmp.setcontent(static_cast<int>(metric.size()), metric.data());
-                double avg_metric;
-                alglib::samplemedian(tmp, avg_metric);
-                orth_axes_stats.push_back(avg_metric);
             }
+            alglib::real_1d_array tmp;
+            tmp.setcontent(static_cast<int>(metric.size()), metric.data());
+            double avg_metric;
+            alglib::samplemedian(tmp, avg_metric);
+            orth_axes_stats.push_back(avg_metric);
         }
 
         return std::accumulate(orth_axes_stats.begin(), orth_axes_stats.end(), 0.0);
