@@ -4,6 +4,7 @@
 #include "config.h"
 #include "clustering.h"
 
+#include <cstdint>
 #include <cilantro/utilities/point_cloud.hpp>
 
 namespace orth_extract{
@@ -13,7 +14,7 @@ namespace orth_extract{
                                     config::CustomConfig config = config::LidarConfig(),
                                     double eps = 1e-1);
 
-    PointCloud EstimateNormals(PointCloud pc, double knn_rad, int max_nn);
+    PointCloud EstimateNormals(PointCloud pc, double knn_rad, int32_t max_nn);
 
     PointCloud BuildNormalsAndLambdas(PointCloud const & pc, double knn_rad);
 }

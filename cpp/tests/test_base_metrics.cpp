@@ -2,7 +2,7 @@
 // Created by achains on 30.10.2021.
 //
 
-#ifdef TEST_BASE_METRICS
+#ifdef TEST_BASE_LIDAR_METRICS
 
 #include <gtest/gtest.h>
 #include <chrono>
@@ -76,4 +76,4 @@ TEST(LidarTest, MME){
     ASSERT_LE(std::fabs(result_mme - 0.018431360563601673), 1e-8);
 }
 
-#endif // TEST_BASE_METRICS
+#endif // TEST_BASE_LIDAR_METRICS

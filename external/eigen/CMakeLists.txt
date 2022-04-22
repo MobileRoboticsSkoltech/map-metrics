@@ -1,6 +1,7 @@
-find_package(eigen QUIET)
+find_package(Eigen3 3.4 QUIET)
 
-if (NOT eigen_FOUND)
+if (NOT Eigen3_FOUND)
+    message("Couldn't find Eigen3.4 library. Performing an install")
     include(FetchContent)
 
     FetchContent_Declare(

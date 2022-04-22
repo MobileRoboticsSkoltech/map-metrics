@@ -1,9 +1,10 @@
 #ifndef MAP_METRICS_CLUSTERING_H
 #define MAP_METRICS_CLUSTERING_H
 
+#include <cstdint>
 #include <vector>
 #include <cilantro/core/data_containers.hpp>
-#include <ap.h>
+#include <alglib/ap.h>
 
 namespace clustering{
 
@@ -13,7 +14,7 @@ namespace clustering{
 
         explicit ClusterMeans(alglib::integer_1d_array const & labels, Eigen::Index cluster_number);
 
-        void filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int min_clust_size);
+        void filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int32_t min_clust_size);
         
         const cilantro::VectorSet3d & getMeans() const;
 

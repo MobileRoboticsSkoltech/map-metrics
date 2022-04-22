@@ -2,12 +2,12 @@
 #include <chrono>
 #include <iostream>
 
-#include "cilantro/3rd_party/tinyply/tinyply.h"
-
 #include "parse_utils.h"
 #include "pc_utils.h"
 
 #include "metrics.h"
+
+#ifdef TEST_BASE_DEPTH_METRICS
 
 namespace kdsearch{
     double GetDistance(Eigen::Vector3d const & x, Eigen::Vector3d const & y){
@@ -58,4 +58,6 @@ TEST(DepthTest, MPV){
     std::cout << "Elapsed time (ms): " << elapsed_milliseconds.count() << std::endl;
 
     ASSERT_LE(std::fabs(actual_mpv - 0.0025390347963358565), 1e-8);
-}
+} 
+
+#endif // TEST_BASE_DEPTH_METRICS
