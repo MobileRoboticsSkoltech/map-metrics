@@ -6,8 +6,9 @@
 #include "metrics.h"
 #include "orth_extract.h"
 
-#include <statistics.h>
+#include <alglib/statistics.h>
 #include <numeric>
+#include <cstdint>
 #include <memory>
 
 namespace metrics {
@@ -79,7 +80,7 @@ namespace metrics {
                 }
             }
             alglib::real_1d_array tmp;
-            tmp.setcontent(static_cast<int>(metric.size()), metric.data());
+            tmp.setcontent(static_cast<int32_t>(metric.size()), metric.data());
             double avg_metric;
             alglib::samplemedian(tmp, avg_metric);
             orth_axes_stats.push_back(avg_metric);

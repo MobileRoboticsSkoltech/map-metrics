@@ -4,7 +4,7 @@
 #include "max_clique.h"
 
 #include <cilantro/core/kd_tree.hpp>
-#include <dataanalysis.h>
+#include <alglib/dataanalysis.h>
 
 #include <iostream>
 
@@ -37,7 +37,7 @@ namespace orth_extract{
         return orthogonal_subset;
     }
 
-    PointCloud EstimateNormals(PointCloud pc, double knn_rad, int max_nn){
+    PointCloud EstimateNormals(PointCloud pc, double knn_rad, int32_t max_nn){
         if (!pc.hasNormals()){
             pc.estimateNormalsKNNInRadius(max_nn, knn_rad, true);
         }

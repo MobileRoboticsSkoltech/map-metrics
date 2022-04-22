@@ -1,6 +1,6 @@
 #include "clustering.h"
 
-#include <dataanalysis.h>
+#include <alglib/dataanalysis.h>
 
 namespace clustering{
     ClusterMeans::ClusterMeans(alglib::integer_1d_array const & labels, Eigen::Index cluster_number) 
@@ -25,7 +25,7 @@ namespace clustering{
         return this->cluster_number_;
     }
 
-    void ClusterMeans::filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int min_clust_size){
+    void ClusterMeans::filterClusters(Eigen::Ref<const cilantro::VectorSet3d> const points, int32_t min_clust_size){
         cluster_idx_.resize(cluster_number_);
         cluster_means_.resize(3, cluster_number_);
 
@@ -64,7 +64,7 @@ namespace clustering{
         // Fit points data
         alglib::real_2d_array xy;
         xy.setcontent(points.cols(), 3, points.data());
-        constexpr int disttype = 2;
+        constexpr int32_t disttype = 2;
 
         alglib::integer_1d_array labels;
         alglib::integer_1d_array cz;

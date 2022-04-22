@@ -16,24 +16,6 @@ namespace parse_utils{
     using PointCloud = cilantro::PointCloud3d;
     using KDTree = cilantro::KDTree3d<>;
 
-//    void WritePCToFile(char const * filename, PointCloud const & PC){
-//        std::ofstream output(filename);
-//        for (Eigen::Vector3d const & row : PC.points_){
-//            for (int i = 0; i < 3; ++i) output << std::setprecision(17) << row[i] << ' ';
-//            output << '\n';
-//        }
-//    }
-//
-//    void WriteTjToFile(char const * filename, std::vector<Eigen::Matrix4d> const & Tj){
-//        std::ofstream output(filename);
-//        for (Eigen::Matrix4d const & mx : Tj){
-//            for (int i = 0; i < 4; ++i){
-//                for (int j = 0; j < 4; ++j) output << std::setprecision(17) << mx(i, j) << ' ';
-//                output << '\n';
-//            }
-//        }
-//    }
-
     std::vector<double> SplitString(std::string const & line, char delim){
         std::istringstream ss(line);
         std::string token;
