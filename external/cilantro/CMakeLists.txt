@@ -10,11 +10,11 @@ if (NOT cilantro_FOUND)
         CMAKE_ARGS
             -DBUILD_EXAMPLES=OFF
             -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-            # -DBUILD_SHARED_LIBS=OFF
+            -DBUILD_SHARED_LIBS=OFF
     )
     ExternalProject_Get_Property(cilantro_external INSTALL_DIR)
     set(cilantro_LIBRARIES 
-    "${INSTALL_DIR}/lib/${CMAKE_SHARED_MODULE_PREFIX}cilantro${CMAKE_SHARED_LIBRARY_SUFFIX}" 
+    "${INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}cilantro${CMAKE_STATIC_LIBRARY_SUFFIX}" 
     CACHE INTERNAL "" FORCE
     )
 endif()

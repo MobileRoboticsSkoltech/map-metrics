@@ -17,7 +17,8 @@ endif()
 
 find_package(Boost 1.55.0 REQUIRED COMPONENTS graph)
 if(Boost_FOUND)
-  target_include_directories(map_metrics_cpp PRIVATE "${Boost_INCLUDE_DIRS}")
+  target_link_libraries(map_metrics_cpp PUBLIC Boost::graph)
+  # target_include_directories(map_metrics_cpp PRIVATE "${Boost_INCLUDE_DIRS}")
 endif()
 
 find_package(Eigen3 3.4 REQUIRED)

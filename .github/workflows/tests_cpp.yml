@@ -21,7 +21,7 @@ jobs:
 
       # You can define a matrix of different job configurations
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
