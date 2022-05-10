@@ -44,7 +44,7 @@ namespace metrics{
 
     // MOM. Mutually Orthogonal Metric 
     double GetMOM(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
-               config::CustomConfig config = config::LidarConfig());
+               config::CustomConfig config = config::LidarConfig(), std::vector<cilantro::VectorSet3d> const & orth_subset = {});
 } // namespace metrics
 
 #endif //MAP_METRICS_METRICS_H

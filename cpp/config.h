@@ -24,6 +24,11 @@ namespace config{
         LidarConfig(): CustomConfig() {}
     };
 
+    class DepthConfig: public CustomConfig{
+    public:
+        DepthConfig(): CustomConfig(5, 0.2) {}
+    };
+
 } // namespace config
 
 #endif // MAP_METRICS_CONFIG_H

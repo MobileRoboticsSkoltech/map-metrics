@@ -11,7 +11,7 @@ option(GLIBCXX_USE_CXX11_ABI   "Set -D_GLIBCXX_USE_CXX11_ABI=1"       OFF)
 # Build Tests
 option(BUILD_TESTS "Build an executable with tests" ON)
 # Python Bindings
-option(BUILD_PYTHON_MODULE "Build the Python library interface" OFF)
+option(BUILD_PYTHON_MODULE "Build the Python library interface" ON)
 # Address sanitizer
 option(USE_ASAN "Address sanitizer" OFF) 
 # Memory sanitizer
