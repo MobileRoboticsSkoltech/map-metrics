@@ -23,33 +23,32 @@ std::vector<cilantro::VectorSet3d> extract_orthogonal(
 }
 
 PYBIND11_MODULE(map_metrics, m){
-    m.doc() = "Baseline of MPV and MME metrics";
+    m.doc() = R"(Map-Metrics library
+A tool for evaluating the quality of odometry algorithm trajectory.)";
+
     py::module_ mcfg = m.def_submodule("config", "Config submodule");
 
     py::class_<config::CustomConfig>(mcfg, "CustomConfig")
             .def(py::init<int, double, int, int>());
 
-    m.def("mpv", py::overload_cast<
-            std::vector<cilantro::VectorSet3d> const &,
-            std::vector<Eigen::Matrix4d> const &,
-            config::CustomConfig
-                >(&metrics::GetMPV));
+    m.def("mpv", &metrics::GetMPV, "Mean Plane Variance trajectory metric",
+          py::arg("pcs"),
+          py::arg("poses"),
+          py::arg("config") = config::CustomConfig());
 
-    m.def("mme", py::overload_cast<
-            std::vector<cilantro::VectorSet3d> const &,
-            std::vector<Eigen::Matrix4d> const &,
-            config::CustomConfig
-                >(&metrics::GetMME));
+    m.def("mme", &metrics::GetMME, "Mean Map Entropy trajectory metric",
+          py::arg("pcs"),
+          py::arg("poses"),
+          py::arg("config") = config::CustomConfig());
 
-    m.def("mom", py::overload_cast<
-            std::vector<cilantro::VectorSet3d> const &,
-            std::vector<Eigen::Matrix4d> const &,
-            config::CustomConfig,
-            std::vector<cilantro::VectorSet3d> const &
-                >(&metrics::GetMOM));
+    m.def("mom", &metrics::GetMOM, "Mutually Orthogonal Metric trajectory metric",
+          py::arg("pcs"),
+          py::arg("poses"),
+          py::arg("config") = config::CustomConfig(),
+          py::arg("orth_subset") = std::vector<cilantro::VectorSet3d>());
 
-    m.def("extract_orthogonal", py::overload_cast<
-            cilantro::VectorSet3d const &,
-            config::CustomConfig,
-            double>(&extract_orthogonal));
+    m.def("extract_orthogonal", &extract_orthogonal, "Extract orthogonal plane subset from Point Cloud",
+          py::arg("pc"),
+          py::arg("config") = config::CustomConfig(),
+          py::arg("eps") = 1e-1);
 }
