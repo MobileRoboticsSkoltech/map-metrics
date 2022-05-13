@@ -42,7 +42,16 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - name: Install additional utils
-        run: yum install -y git openssh-clients boost-graph
+        run: yum install -y git openssh-clients wget
+
+      - name: Install Boost 1.55.0
+        run: |
+          cd usr/
+          wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2 --no-check-certificate
+          tar -xvjf boost_1_55_0.tar.bz2
+          cd boost_1_55_0/
+          ./bootstrap.sh --with-icu
+          ./b2 --with-graph
 
       - uses: actions/checkout@v1
 
@@ -62,6 +71,7 @@ jobs:
 
   publish_test_pypi:
     name: Publish wheels to Test PyPI
+    needs: build_wheel_linux
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
