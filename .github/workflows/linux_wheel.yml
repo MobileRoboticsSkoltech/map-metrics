@@ -42,7 +42,7 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - name: Install additional utils
-        run: yum install -y git openssh-clients
+        run: yum install -y git openssh-clients boost-graph
 
       - uses: actions/checkout@v1
 
