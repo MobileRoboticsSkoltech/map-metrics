@@ -46,12 +46,12 @@ jobs:
 
       - name: Install Boost 1.55.0
         run: |
-          pwd
           wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2 --no-check-certificate
           tar -xvjf boost_1_55_0.tar.bz2
           cd boost_1_55_0/
           ./bootstrap.sh --with-icu
           ./b2 --with-graph
+          chmod -R +x ./*
 
       - uses: actions/checkout@v1
 
