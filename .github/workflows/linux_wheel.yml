@@ -58,6 +58,7 @@ jobs:
           ./bootstrap.sh --with-icu
           ./b2 --with-graph
           chmod -R +x ./*
+          echo "BOOST_ROOT=$(pwd)" >> $GITHUB_ENV
       - name: Build Python wheel
         run: |
           chmod -R +x scripts/* \
