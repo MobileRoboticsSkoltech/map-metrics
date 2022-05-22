@@ -44,22 +44,20 @@ jobs:
       - name: Install additional utils
         run: yum install -y git openssh-clients wget
 
-      - name: Install Boost 1.55.0
-        run: |
-          chown -R $USER:$USER /home/runner/work/map-metrics/map-metrics/
-          wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2 --no-check-certificate
-          tar -xvjf boost_1_55_0.tar.bz2
-          cd boost_1_55_0/
-          ./bootstrap.sh --with-icu
-          ./b2 --with-graph
-          chmod -R +x ./*
-
       - uses: actions/checkout@v1
 
       - name: Install fresh CMake into ManyLinux container
         run: |
           env pybin=$(LANG=C ls -d1r /opt/python/cp3*/bin | head -n 1) bash -c '$pybin/python -m pip install cmake && mkdir -p /usr/local/bin && ln -svf $pybin/cmake /usr/local/bin/cmake'
           cmake --version
+      - name: Install Boost 1.55.0
+        run: |
+          wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2 --no-check-certificate
+          tar -xvjf boost_1_55_0.tar.bz2
+          cd boost_1_55_0/
+          ./bootstrap.sh --with-icu
+          ./b2 --with-graph
+          chmod -R +x ./*
       - name: Build Python wheel
         run: |
           chmod -R +x scripts/* \
