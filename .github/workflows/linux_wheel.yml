@@ -59,6 +59,7 @@ jobs:
           ./b2 --with-graph
           chmod -R +x ./*
           echo "BOOST_ROOT=$(pwd)" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/stage/lib" >> $GITHUB_ENV
       - name: Build Python wheel
         run: |
           chmod -R +x scripts/* \
