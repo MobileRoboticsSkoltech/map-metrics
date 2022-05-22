@@ -46,6 +46,7 @@ do
              -DPYTHON_EXECUTABLE:FILEPATH=${PYBIN} \
              -DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE \
              -DCMAKE_INSTALL_RPATH='$ORIGIN' \
+             -DBOOST_ROOT=${BOOST_ROOT} \
              -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$PWD/../bin \
              -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$PWD/../map_metrics \
     && cmake --build .

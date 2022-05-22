@@ -101,5 +101,10 @@ namespace metrics {
                                    &metrics_utils::metrics_algorithm::ComputeEntropy);
     }
 
+    double GetMOM(std::vector<cilantro::VectorSet3d> const & pcs_points, std::vector<Eigen::Matrix4d> const & ts,
+               config::CustomConfig config, std::vector<cilantro::VectorSet3d> const & orth_subset){
+        return ComputeOrthogonalMetrics(pcs_points, ts, config, 
+                                         &metrics_utils::metrics_algorithm::ComputeEigenvalues, orth_subset);
+    }
     
 } // namespace metrics

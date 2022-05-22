@@ -1,0 +1,88 @@
+# # # # # # # # #
+# Source: https://github.com/miloserdova-l/mrob/blob/feature/windows-wheel/.github/workflows/wheels.yml
+# # # # # # # # #
+name: Build wheels
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    name: Build map_metrics project
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ./lib
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install required packages from distro
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends git build-essential g++ cmake python3-distutils python3-dev python3-numpy python3-pip libboost-graph-dev
+          python3 -m pip install pytest
+
+      - name: Configure and build native map_metrics library with Python bindings
+        run: |
+          mkdir -p build
+          cmake -S $PWD -B $PWD/build \
+           -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$PWD/bin \
+           -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$PWD/lib \
+           -DCMAKE_BUILD_TYPE=RELEASE \
+          && cmake --build build -j $(nproc)
+
+  build_wheel_linux:
+    name: Build wheel on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    container: quay.io/pypa/manylinux2010_x86_64
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: Install additional utils
+        run: yum install -y git openssh-clients wget
+
+      - uses: actions/checkout@v1
+
+      - name: Install fresh CMake into ManyLinux container
+        run: |
+          env pybin=$(LANG=C ls -d1r /opt/python/cp3*/bin | head -n 1) bash -c '$pybin/python -m pip install cmake && mkdir -p /usr/local/bin && ln -svf $pybin/cmake /usr/local/bin/cmake'
+          cmake --version
+      - name: Install Boost 1.55.0
+        run: |
+          wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2 --no-check-certificate
+          tar -xvjf boost_1_55_0.tar.bz2
+          cd boost_1_55_0/
+          ./bootstrap.sh --with-icu
+          ./b2 --with-graph
+          chmod -R +x ./*
+          echo "BOOST_ROOT=$(pwd)" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/stage/lib" >> $GITHUB_ENV
+      - name: Build Python wheel
+        run: |
+          chmod -R +x scripts/* \
+          && scripts/build-wheels-linux.sh
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: artifact
+          path: ./wheelhouse
+
+  publish_test_pypi:
+    name: Publish wheels to Test PyPI
+    needs: build_wheel_linux
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Publish to Test-PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          packages_dir: artifact/

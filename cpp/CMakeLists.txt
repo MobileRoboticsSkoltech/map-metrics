@@ -26,7 +26,7 @@ if (Eigen3_FOUND)
   target_link_libraries(map_metrics_cpp PRIVATE Eigen3::Eigen)
 endif()
 
-target_include_directories(map_metrics_cpp PRIVATE "${CMAKE_BINARY_DIR}/external/cilantro/cilantro/include")
+target_include_directories(map_metrics_cpp PUBLIC "${CMAKE_BINARY_DIR}/external/cilantro/cilantro/include")
 # TODO: Is it really necessary to specify target_include_dir for alglib here?
 target_include_directories(map_metrics_cpp PUBLIC "${CMAKE_BINARY_DIR}/external/alglib/include")
 target_include_directories(map_metrics_cpp PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
