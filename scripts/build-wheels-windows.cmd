@@ -52,5 +52,5 @@ EXIT /B 0
 
 :build
 cmake -S . -B build -G "Visual Studio 16 2019" -A "%~1" -DPYTHON_EXECUTABLE:FILEPATH=%~2 -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=%cd%\map_metrics -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE=%cd%\map_metrics || EXIT /B !ERRORLEVEL!
-cmake --build build --config Release -j %NUMBER_OF_PROCESSORS% || EXIT /B !ERRORLEVEL!
+cmake --build build --config Release || EXIT /B !ERRORLEVEL!
 EXIT /B 0
