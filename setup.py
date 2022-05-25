@@ -62,7 +62,7 @@ except ImportError:
 
 setup_kwargs = dict(
     name='map_metrics',
-    version='0.0.5',
+    version='0.0.6',
     packages=find_packages(),
     cmdclass={'bdist_wheel': bdist_wheel}
 )
