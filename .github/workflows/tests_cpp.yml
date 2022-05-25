@@ -48,7 +48,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-             if [ "$RUNNER_OS" == "Windows"]; then 
+             if [ "$RUNNER_OS" == "Windows" ]; then 
                 cmake -B ${{github.workspace}}/build\
                 -DCMAKE_BUILD_TYPE=Release\
                 -DBUILD_TESTS=ON\
@@ -57,6 +57,7 @@ jobs:
              else
                 cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
              fi
+        shell: bash
         # env:
         #   BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
