@@ -55,9 +55,7 @@ jobs:
              cmake -B ${{github.workspace}}/build\
              -DCMAKE_BUILD_TYPE=Release\
              -DBUILD_TESTS=ON\
-             ${env.BOOST_PATH_CMAKE_FLAGS}
-        env:
-          BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+             $(env.BOOST_PATH_CMAKE_FLAGS)
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config Release
