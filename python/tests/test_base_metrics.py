@@ -17,12 +17,9 @@ def poses():
 
 @pytest.fixture
 def points():
-    def pcs_to_point_set(pcs):
-        return list(map(lambda pc: np.asarray(pc.points).T, pcs))
-    path = 'python/tests/data/depth/pcs'
-    pcs_names = sorted(os.listdir(path))
-    pcs = [o3d.io.read_point_cloud(f"{path}/{name}") for name in pcs_names]
-    return pcs_to_point_set(pcs)
+    path = 'python/tests/data/depth/points'
+    points_names = sorted(os.listdir(path))
+    return [np.load(f"{path}/{name}") for name in points_names]
 
 
 @pytest.fixture

@@ -1,2 +1,2 @@
-open3d
+numpy
 pytest==6.2.5
