@@ -31,48 +31,35 @@ jobs:
            -DCMAKE_BUILD_TYPE=RELEASE \
           && cmake --build build -j $(nproc)
 
-  build_wheel_linux:
+  build_wheel_macOS:
     name: Build wheel on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    container: quay.io/pypa/manylinux2010_x86_64
     needs: build
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ macos-10.15 ]
     steps:
-      - name: Install additional utils
-        run: yum install -y git openssh-clients wget
+      - uses: actions/checkout@v2
 
-      - uses: actions/checkout@v1
+      - name: Git fetch
+        run: git fetch --prune --unshallow --recurse-submodules=no
 
-      - name: Install fresh CMake into ManyLinux container
-        run: |
-          env pybin=$(LANG=C ls -d1r /opt/python/cp3*/bin | head -n 1) bash -c '$pybin/python -m pip install cmake && mkdir -p /usr/local/bin && ln -svf $pybin/cmake /usr/local/bin/cmake'
-          cmake --version
-      - name: Install Boost 1.55.0
-        run: |
-          wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2 --no-check-certificate
-          tar -xvjf boost_1_55_0.tar.bz2
-          cd boost_1_55_0/
-          ./bootstrap.sh --with-icu
-          ./b2 --with-graph
-          chmod -R +x ./*
-          echo "BOOST_ROOT=$(pwd)" >> $GITHUB_ENV
-          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/stage/lib" >> $GITHUB_ENV
-      - name: Build Python wheel
-        run: |
-          chmod -R +x scripts/* \
-          && scripts/build-wheels-linux.sh
+      - name: Install packages
+        run: | 
+          brew install coreutils \
+          && brew install gcc
+          brew install boost 
+      - name: Build wheel
+        run: ./scripts/build-wheels-macOS.sh
 
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         with:
-          name: artifact
-          path: ./wheelhouse
+          path: ./dist
 
   publish_test_pypi:
     name: Publish wheels to Test PyPI
-    needs: build_wheel_linux
+    needs: build_wheel_macOS
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
