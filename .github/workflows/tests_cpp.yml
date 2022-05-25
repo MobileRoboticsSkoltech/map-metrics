@@ -48,14 +48,17 @@ jobs:
 
       - name: Configure CMake
         run: |
-             if [ "$RUNNER_OS" == "Windows" ]; then
-                echo "BOOST_PATH_CMAKE_FLAGS=-DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include\
-                -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib" >> $GITHUB_ENV
+             if [ "$RUNNER_OS" == "Windows"]; then 
+                cmake -B ${{github.workspace}}/build\
+                -DCMAKE_BUILD_TYPE=Release\
+                -DBUILD_TESTS=ON\
+                -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include\
+                -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
+             else
+                cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
              fi
-             cmake -B ${{github.workspace}}/build\
-             -DCMAKE_BUILD_TYPE=Release\
-             -DBUILD_TESTS=ON\
-             $(env.BOOST_PATH_CMAKE_FLAGS)
+        # env:
+        #   BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config Release
