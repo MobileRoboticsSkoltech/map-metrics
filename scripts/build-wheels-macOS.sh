@@ -23,7 +23,7 @@
 
 set -euo pipefail
 export LC_ALL=C
-export MACOSX_DEPLOYMENT_TARGET=10.14
+export MACOSX_DEPLOYMENT_TARGET=10.15
 
 cd $(dirname $(greadlink -f "${BASH_SOURCE[0]}"))/..
 mkdir -p ./build ./dist ./map_metrics
@@ -31,8 +31,8 @@ cp ./__init__.py ./map_metrics/__init__.py
 
 cd ./build
 
-NUMPROC=$(sysctl -n hw.ncpu)
-echo "Running $NUMPROC parallel jobs"
+# NUMPROC=$(sysctl -n hw.ncpu)
+# echo "Running $NUMPROC parallel jobs"
 
 for PYBIN in /Users/runner/hostedtoolcache/Python/3.*/x64/bin/python3.*
 do
