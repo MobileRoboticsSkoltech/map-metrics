@@ -42,7 +42,7 @@ do
              -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$PWD/../bin \
              -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$PWD/../map_metrics \
              -DCMAKE_CXX_FLAGS="-std=c++1z" \
-    && cmake --build . -j $NUMPROC
+    && cmake --build .
 done
 
 cd ../
