@@ -1,8 +1,8 @@
 import numpy as np
 import os
 
-import map_metrics
-
+# import map_metrics
+from map_metrics import map_metrics
 
 import pytest
 
