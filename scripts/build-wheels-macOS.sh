@@ -34,7 +34,7 @@ cd ./build
 # NUMPROC=$(sysctl -n hw.ncpu)
 # echo "Running $NUMPROC parallel jobs"
 
-for PYBIN in /Users/runner/hostedtoolcache/Python/3.*/x64/bin/python3.*
+for PYBIN in /Users/runner/hostedtoolcache/Python/3.*/x64/bin/python*?[0-9]
 do
     cmake .. -DPYTHON_EXECUTABLE:FILEPATH=$PYBIN \
              -DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE \
