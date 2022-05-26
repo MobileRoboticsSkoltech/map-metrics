@@ -31,7 +31,7 @@ cp ./__init__.py ./map_metrics/__init__.py
 
 cd ./build
 
-export DYLD_LIBRARY_PATH=${BOOST_ROOT}/lib:$DYLD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=${BOOST_ROOT}/lib
 
 for PYBIN in /Users/runner/hostedtoolcache/Python/3.*/x64/bin/python*?[0-9]
 do
