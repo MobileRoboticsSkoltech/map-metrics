@@ -272,7 +272,7 @@ jobs:
     name: Publish wheels to Test PyPI
     needs:
       - test_wheel_linux
-      - test_wheel_macos
+      # - test_wheel_macos
       - test_wheel_windows64
       - test_wheel_windows32
     if: github.event_name == 'push'
