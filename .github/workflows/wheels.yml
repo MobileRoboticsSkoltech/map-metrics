@@ -92,6 +92,8 @@ jobs:
 
       - name: Build wheel
         run: ./scripts/build-wheels-macOS.sh
+        env:
+          BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
       - uses: actions/upload-artifact@v2
         with:

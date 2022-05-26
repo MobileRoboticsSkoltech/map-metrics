@@ -39,6 +39,7 @@ do
     cmake .. -DPYTHON_EXECUTABLE:FILEPATH=$PYBIN \
              -DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE \
              -DCMAKE_INSTALL_RPATH="@loader_path" \
+             -DBOOST_ROOT=${BOOST_ROOT} \
              -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$PWD/../bin \
              -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$PWD/../map_metrics \
              -DCMAKE_CXX_FLAGS="-std=c++1z" \
