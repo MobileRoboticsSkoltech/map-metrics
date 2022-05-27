@@ -49,8 +49,8 @@ jobs:
       #     boost_version: 1.72.0
       #     platform_version: 2019
 
-      - name: Configure CMake (Windows)
-        if: runner.os == 'Windows'
+      - name: Configure CMake (macOS and Windows)
+        if: ${{(runner.os == 'Windows') || (runner.os == 'macOS')}}
         run: cmake -B ${{github.workspace}}/build\
              -DCMAKE_BUILD_TYPE=Release\
              -DBUILD_TESTS=ON\
@@ -59,7 +59,7 @@ jobs:
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
-      - name: Configure CMake (Unix)
+      - name: Configure CMake (Linux)
         if: ${{(runner.os == 'Linux') || (runner.os == 'macOS')}}
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
 
