@@ -29,14 +29,17 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v2
 
-      - name: Install boost
-        run: |
-             if [ "$RUNNER_OS" == "Linux" ]; then 
-                sudo apt install -y libboost-graph-dev
-             elif [ "$RUNNER_OS" == "macOS" ]; then 
-                brew install boost
-             fi
-        shell: bash
+      - name: Install boost (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt install -y libboost-graph-dev
+
+
+      - name: Install boost (MacOS)
+      - if: runner.os == 'macOS'
+        uses: MarkusJx/install-boost@v2.3.0
+        id: install-boost
+        with:
+          boost_version: 1.72.0 
 
       - name: Install boost (Windows)
         if: runner.os == 'Windows'
