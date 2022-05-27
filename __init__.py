@@ -15,9 +15,9 @@
 #
 #  __init__.py
 #
-#  Created on: Dec 10, 2021
-#       Author: Arthur Saliou a.k.a. achains
-#               arthur.salio@gmail.com
+#  Created on: Nov 11, 2020
+#       Author: Lyubov Miloserdova
+#               miloslubov@gmail.com
 #
 
 try:
