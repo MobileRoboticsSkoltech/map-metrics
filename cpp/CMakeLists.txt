@@ -15,6 +15,10 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
   target_compile_options(map_metrics_cpp PRIVATE "-O2")
 endif()
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+   set(Boost_USE_STATIC_LIBS ON)
+endif()
+
 find_package(Boost 1.55.0 REQUIRED COMPONENTS graph)
 if(Boost_FOUND)
   target_link_libraries(map_metrics_cpp PUBLIC Boost::graph)
