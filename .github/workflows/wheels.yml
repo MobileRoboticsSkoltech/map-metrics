@@ -269,61 +269,61 @@ jobs:
             python $f.FullName || EXIT /B !ERRORLEVEL!
           }
 
-  publish_test_pypi:
-    name: Publish wheels to Test PyPI
+  # publish_test_pypi:
+  #   name: Publish wheels to Test PyPI
+  #   needs:
+  #     - test_wheel_linux
+  #     - test_wheel_macos
+  #     - test_wheel_windows64
+  #     - test_wheel_windows32
+  #   if: github.event_name == 'push'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@v2
+
+  #     - name: Publish to Test-PyPI
+  #       uses: pypa/gh-action-pypi-publish@release/v1
+  #       with:
+  #         user: __token__
+  #         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+  #         repository_url: https://test.pypi.org/legacy/
+  #         packages_dir: artifact/
+  publish_pypi:
+    name: Publish wheels to PyPI
     needs:
       - test_wheel_linux
       - test_wheel_macos
       - test_wheel_windows64
       - test_wheel_windows32
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v2
 
-      - name: Publish to Test-PyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.PYPI_API_TOKEN }}
           packages_dir: artifact/
-  # publish_pypi:
-  #   name: Publish wheels to PyPI
-  #   needs:
-  #     - test_wheel_linux
-  #     - test_wheel_macos
-  #     - test_wheel_windows64
-  #     - test_wheel_windows32
-  #   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download artifacts
-  #       uses: actions/download-artifact@v2
 
-  #     - name: Publish to PyPI
-  #       uses: pypa/gh-action-pypi-publish@release/v1
-  #       with:
-  #         user: __token__
-  #         password: ${{ secrets.PYPI_API_TOKEN }}
-  #         packages_dir: artifact/
+  publish-github-release:
+    name: Publish wheels to GitHub Releases
+    needs:
+      - test_wheel_linux
+      - test_wheel_macos
+      - test_wheel_windows64
+      - test_wheel_windows32
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
 
-  # publish-github-release:
-  #   name: Publish wheels to GitHub Releases
-  #   needs:
-  #     - test_wheel_linux
-  #     - test_wheel_macos
-  #     - test_wheel_windows64
-  #     - test_wheel_windows32
-  #   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download artifacts
-  #       uses: actions/download-artifact@v2
-
-  #     - uses: softprops/action-gh-release@v1
-  #       with:
-  #         files: artifact/*.whl
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: artifact/*.whl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
