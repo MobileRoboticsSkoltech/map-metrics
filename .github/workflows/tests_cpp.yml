@@ -34,20 +34,20 @@ jobs:
         run: sudo apt install -y libboost-graph-dev
 
 
-      - name: Install boost (MacOS)
-        if: runner.os == 'macOS'
+      - name: Install boost (macOS and Windows)
+        if: ${{(runner.os == 'Windows') || (runner.os == 'macOS')}}
         uses: MarkusJx/install-boost@v2.3.0
         id: install-boost
         with:
           boost_version: 1.72.0 
 
-      - name: Install boost (Windows)
-        if: runner.os == 'Windows'
-        uses: MarkusJx/install-boost@v2.3.0
-        id: install-boost
-        with:
-          boost_version: 1.72.0
-          platform_version: 2019
+      # - name: Install boost (Windows)
+      #   if: runner.os == 'Windows'
+      #   uses: MarkusJx/install-boost@v2.3.0
+      #   id: install-boost
+      #   with:
+      #     boost_version: 1.72.0
+      #     platform_version: 2019
 
       - name: Configure CMake (Windows)
         if: runner.os == 'Windows'
